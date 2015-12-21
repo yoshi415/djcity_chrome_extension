@@ -1,0 +1,11 @@
+body{
+    padding:5px;
+    width:110px;
+    -webkit-user-select:none;
+}
+
+input{
+    padding:0;
+    margin:0;
+    vertical-align: bottom;
+}

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "author": "Yoshio Varney",
+  "name": "DJCity Easy Rate",
+  "description": "Easily rate DJCity songs",
+  "version": "1.0",
+  "icons": {
+    "16": "images/djcity16.png",
+    "48": "images/djcity48.png"
+  },
+
+  "browser_action": {
+    "default_icon": "images/djcity16.png",
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "scripts": ["popup.js"],
+    "persistent": false
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://www.djcity.com/*"],
+      "js": ["jquery-1.11.3.min.js", "rate.js"]
+    }
+  ]  
+}
