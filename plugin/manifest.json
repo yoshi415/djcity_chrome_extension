@@ -9,14 +9,15 @@
     "48": "images/djcity48.png"
   },
 
-  "browser_action": {
+  "page_action": {
     "default_icon": "images/djcity16.png",
     "default_popup": "popup.html"
   },
+  
+  "permissions": [ "tabs" ],
 
   "background": {
-    "scripts": ["popup.js"],
-    "persistent": false
+    "scripts": ["jquery-1.11.3.min.js", "background.js"]
   },
 
   "content_scripts": [
