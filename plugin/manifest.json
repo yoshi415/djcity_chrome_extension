@@ -14,16 +14,16 @@
     "default_popup": "popup.html"
   },
   
-  "permissions": [ "tabs" ],
+  "permissions": [ "tabs", "storage" ],
 
   "background": {
-    "scripts": ["jquery-1.11.3.min.js", "background.js"]
+    "scripts": [ "background.js" ]
   },
 
   "content_scripts": [
     {
-      "matches": ["http://www.djcity.com/*"],
-      "js": ["jquery-1.11.3.min.js", "rate.js"]
+      "matches": [ "http://www.djcity.com/*" ],
+      "js": [ "jquery-1.11.3.min.js", "rate.js", "popup.js" ]
     }
   ]  
 }

@@ -1,11 +1,19 @@
 body{
     padding:5px;
-    width:110px;
+    width:140px;
     -webkit-user-select:none;
 }
 
 input{
     padding:0;
+}
+
+input1{
+    padding:0;
     margin:0;
     vertical-align: bottom;
+}
+
+toggleAuto{
+  text-align: center;
 }
