@@ -1,5 +1,5 @@
 function checkURL(tabId, info, tab) {
-  if (~tab.url.indexOf("djcity.com")) {
+  if (~tab.url.indexOf("djcity.co")) {
     chrome.pageAction.show(tabId);
   }
 }

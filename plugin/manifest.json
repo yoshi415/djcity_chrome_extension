@@ -3,7 +3,7 @@
   "author": "Yoshio Varney",
   "name": "DJCity Easy Rate",
   "description": "Easily rate DJCity songs",
-  "version": "1.0",
+  "version": "0.1",
   "icons": {
     "16": "images/djcity16.png",
     "48": "images/djcity48.png"
@@ -22,7 +22,7 @@
 
   "content_scripts": [
     {
-      "matches": [ "http://www.djcity.com/*" ],
+      "matches": [ "http://*.djcity.com/*", "http://*.djcity.co.uk/*" ],
       "js": [ "jquery-1.11.3.min.js", "rate.js", "popup.js" ]
     }
   ]  
