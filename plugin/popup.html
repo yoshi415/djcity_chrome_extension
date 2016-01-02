@@ -4,15 +4,21 @@
     <link rel="stylesheet" type="text/css" href="popup.css">
   </head>
   <body>
-    <label for="toggleAuto"><input type="checkbox" id="toggleAuto">  Auto rate songs</label>
-    <br>
-    <form id="ratings">
-      <input type="radio" name="rating" value="5"> 5
-      <input type="radio" name="rating" value="4"> 4
-      <input type="radio" name="rating" value="3"> 3
-      <input type="radio" name="rating" value="2"> 2
-      <input type="radio" name="rating" value="1"> 1
-    </form>
+    <span id="center">DJ City Autorate Toggle</span>
+    <div class="toggleAuto">  
+      <input type="checkbox" value="None" id="toggleAuto" name="check" />
+      <label for="toggleAuto"><span></span></label>
+    </div>
+    <div id="radio">
+      <form>
+        <label for="ratings" id="radioLabel" ><span id="red">Rating:</span><br>
+        <input type="radio" name="rating" value="5"> 5
+        <input type="radio" name="rating" value="4"> 4
+        <input type="radio" name="rating" value="3"> 3
+        <input type="radio" name="rating" value="2"> 2
+        <input type="radio" name="rating" value="1"> 1
+      </form>
+    </div>
     <script src="jquery-1.11.3.min.js"></script>
     <script src="popup.js"></script>
   </body>

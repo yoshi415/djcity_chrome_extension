@@ -21,7 +21,6 @@ document.addEventListener('keydown', function(e) {
 }, true);
 
 chrome.storage.local.get(["autorate", "rating"], function(settings) {
-  console.log("rating is: ", settings["rating"])
   if (!settings["autorate"]) {
     autorate = false;
   } else {
@@ -35,16 +34,16 @@ chrome.storage.onChanged.addListener(function(changes, local) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
       autorate = true;
-      console.log("Enabling autorating for DJCity Easy Rate");
+      // console.log("Enabling autorating for DJCity Easy Rate");
     } else {
       autorate = false;
-      console.log("Disabling autorate for DJCity Auto Rate");
+      // console.log("Disabling autorate for DJCity Auto Rate");
     }
   }
 
   if (changes.rating) {
     rating = changes.rating.newValue;
-    console.log("Songs will be rated at a ", rating);
+    // console.log("Songs will be rated at a ", rating);
   }
 });
 
