@@ -1,4 +1,5 @@
 var autorate, rating;
+var playing = false;
 var keycodes = {
   49: 1,
   50: 2,
@@ -6,17 +7,60 @@ var keycodes = {
   52: 4,
   53: 5
 };
+var songTypes = {
+  dirty:      /^Dirty$/,
+  clean:      /^Clean$/, 
+  introdirty: /^Intro - Dirty$/,
+  introclean: /^Intro - Clean$/,
+  main:       /^Main$/,
+  inst:       /^Inst$/,
+  acap:       /^Acap - Dirty$/
+
+}
+// var $play = $("a.jp-play");
+// var $pause = $("a.jp-pause");
 
 function rate(rating) {
     $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
     $('#ctl00_PageContent_submit').click();
-    console.log("Rating the song at a ", rating)
+    // console.log("Rating the song at a ", rating)
+    playPause();
+}
+
+function download(songType) {
+  var re = new RegExp(songTypes[songType]);
+  re.test
+  // $("#ad_sublisting").find("li:contains(" + songType + ")").find("div.reviw_tdonw").children()[0].click()
+}
+
+function playPause(e) {
+  if (!playing) {
+    document.getElementsByClassName("jp-play")[0].click()
+    playing = true;
+    // $play.click(function(e) {
+    //   e.preventDefault();
+    // });
+    // $play.trigger('click')
+  } else {
+    document.getElementsByClassName("jp-pause")[0].click()
+    playing = false;
+    // $pause.click(function(e) {
+    //   e.preventDefault();
+    // })
+    // console.log("playin")
+  }
 }
 
 document.addEventListener('keydown', function(e) {
   var keycode = keycodes[e.keyCode];
   if (keycode) {
     rate(keycode);
+  }
+  if (e.keyCode === 68) {
+    download()
+  }
+  if (e.keyCode === 80) {
+    playPause();
   }
 }, true);
 
