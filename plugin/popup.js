@@ -52,20 +52,18 @@ $dropdownDL.change(function() {
   chrome.storage.local.set({"downloadType": downloadType});
 });
 
-$(function() {
-  $toggleAuto.change(function() {
-    if (this.checked) {
-      $radioRate.show();
-    } else {
-      $radioRate.hide();
-    }
-  });
-
-  $toggleDL.change(function() {
-    if (this.checked) {
-      $dropdownDL.show();
-    } else {
-      $dropdownDL.hide();
-    }
-  })
+$toggleAuto.change(function() {
+  if (this.checked) {
+    $radioRate.show();
+  } else {
+    $radioRate.hide();
+  }
 });
+
+$toggleDL.change(function() {
+  if (this.checked) {
+    $dropdownDL.show();
+  } else {
+    $dropdownDL.hide();
+  }
+})

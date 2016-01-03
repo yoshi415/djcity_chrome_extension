@@ -2,8 +2,10 @@ var autorate, rating, downloadToggle, downloadType;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
 var $searchBtn = $(".search_btn");
-var $warning = $("div.header_border_bottom:first");
-var artist = $("#artist_details li:first div.artist_details");
+var $insertText = $("div.header_border_bottom:first");
+var $artist = $("#artist_details li:first div.artist_details");
+var $featured = $("#artist_details li:nth-child(3) div.artist_details");
+var $featuring = $("#artist_details li:nth-child(3) div.artist_label");
 var playing = false;
 var focused = false;
 var keycodes = {
@@ -20,7 +22,8 @@ var songTypes = {
   "Intro - Clean": /^Intro - Clean$/,
   "Main":          /^Main$/,
   "Inst":          /^Inst$/,
-  "Acap":          /^Acap/
+  "Acap":          /^Acap/, 
+  "Main":          /^Main/
 };
 
 function rate(rating) {
@@ -39,26 +42,30 @@ function download(songType) {
     if ($(this).find(typeText).text().match(re)) {
       found = true
       $(this).find(dl).children()[0].click()
+      var success = createElement("Song was downloaded successfully!", "green");
+      insertText(success, false);
     }
-  })
+  });
 
   if (!found) {
-    // if ($("#removeMe").length === 0) {
-      var warning = "<div style='text-align:center' id='removeMe'><br /><p style='color:red;font-size:15px;'>" + songType + " isn't an option on this song! Try manually downloading</p></div>"
-      $warning.after(warning);
-    // } else {
-    //   $("#removeMe").show();
-    // }
+    var text = songType + " isn't an option on this song! Try manually downloading";
+    var warning = createElement(text, "red")
+    insertText(warning, true);
+  }
+}
+
+function insertText(text, remove) {
+  $insertText.after(text);
+  if (remove) {
     setTimeout(function() {
       $("#removeMe").remove();
     }, 3000);
   }
 }
 
-// function remove() {
-//   $removeMe.hide();
-//   console.log("running")
-// }
+function createElement(text, color) {
+  return "<div style='text-align:center' id='removeMe'><br /><p style='color:" + color + ";font-size:15px;'>" + text + "</p></div>"
+}
 
 function playPause(e) {
   if (!playing) {
@@ -93,7 +100,7 @@ document.addEventListener('keydown', function(e) {
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
   autorate = settings.autorate ? true : false;
 
-  rating = settings.rating; 
+  rating = settings.rating ? settings.rating : 5; 
 
   downloadToggle = settings.downloadToggle ? true : false;
 
@@ -103,8 +110,10 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 chrome.storage.onChanged.addListener(function(changes, local) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
+      console.log('autorating enabled')
       autorate = true;
     } else {
+      console.log('autorating disabled')
       autorate = false;
     }
   }
@@ -130,7 +139,11 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 $(function() {
   if (autorate) {
     rate(rating);
+    if (downloadToggle) {
+      download(downloadType);
+    }
   }
+
 
   $search.focus(function() {
     focused = true;
@@ -139,11 +152,50 @@ $(function() {
     focused = false;
   });
   
-  var artistName = artist.text();
-  artist.html("<span>" + artistName + " - </span><a href=" + artistName + " id='searchArtist'>search for more songs by artist</a>"  )
+  function createLink(artist) {
+    return "<a href='" + artist + "' class='searchArtist'>" + artist + "</a>";
+  }
 
-  $("#searchArtist").click(function(e) {
+  function createLinks(artist) {
+    var artistNames = artist.text().replace(/\&/g, ",").split(",").filter(function(item) {
+      return item !== " ";
+    });
+    var artistLength = artistNames.length;
+    var searchString = "<span>"
+    // var addlText = "<br />click to search for more songs from the artist"
+
+    artistNames.forEach(function(artistName, index) {
+      var lastIndex = artistLength - 1 === index;
+      searchString += createLink(artistName.trim());
+      if (!(artistLength - 1 === index)) {
+        if (artistLength === 2) {
+          searchString += " & ";
+        }
+
+        if ((artistLength > 2)) {
+          searchString += ", ";
+          if (artistLength - 2 === index) {
+            searchString += "& ";
+          }
+        }
+      }
+    });
+
+    // searchString += addlText;
+    // if (artistLength > 1) {
+    //   searchString += "s";
+    // }
+    searchString += "</span>"
+    artist.html(searchString);
+  }
+
+  createLinks($artist);
+  if ($featuring.text() === "Featuring") {
+    createLinks($featured);
+  }
+
+  $(".searchArtist").click(function(e) {
     e.preventDefault();
-    searchArtist(artistName);
+    searchArtist($(this).text());
   });
 });
