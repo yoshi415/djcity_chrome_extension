@@ -2,12 +2,13 @@ var autorate, rating, downloadToggle, downloadType;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
 var $searchBtn = $(".search_btn");
-var $insertText = $("div.header_border_bottom:first");
+var $insertMessage = $("div.header_border_bottom:first");
 var $artist = $("#artist_details li:first div.artist_details");
 var $featured = $("#artist_details li:nth-child(3) div.artist_details");
 var $featuring = $("#artist_details li:nth-child(3) div.artist_label");
 var playing = false;
 var focused = false;
+var rated = false;
 var actionsAllowed = true;
 var keycodes = {
   49: 1,
@@ -26,47 +27,66 @@ var songTypes = {
   "Acap":          /^Acap/, 
   "Main":          /^Main/
 };
+var disabledURLs = [
+  "http://www.djcity.com/",
+  "http://www.djcity.com/digital/record-pool.aspx",
+  "http://www.djcity.com/charts/"
+]
 
 function rate(rating) {
-    $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
-    $submit.click();
+  $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
+  $submit.click();
+  rated = true
 }
 
 function download(songType) {
-  var re = new RegExp(songTypes[songType]);
-  var $availFormats = $("#ad_sublisting li");
-  var typeText = ".float_left";
-  var dl = ".reviw_tdonw";
-  var found = false;
+  if (rated) {
+    var re = new RegExp(songTypes[songType]);
+    var $availFormats = $("#ad_sublisting li");
+    var typeText = ".float_left";
+    var dlButton = ".reviw_tdonw";
+    var found = false;
 
-  $availFormats.each(function(index, li) {
-    if ($(this).find(typeText).text().match(re)) {
-      found = true;
-      $(this).find(dl).children()[0].click();
-      $submit.trigger('click');
+    $availFormats.each(function(index, li) {
+      if ($(this).find(typeText).text().match(re)) {
+        found = true;
+        $(this).find(dlButton).children()[0].click();
+        $submit.trigger('click');
+      }
+    });
+
+    if (!found) {
+      var text = songType + " isn't an track option on this song! Try another option";
+      var message = createMessage(text, "red");
+      if (autorate && downloadToggle) {
+        insertMessage(message, false);
+      } else {
+        insertMessage(message, true);
+      }
+
     }
-  });
-
-  if (!found) {
-    var text = songType + " isn't an option on this song! Try manually downloading";
-    var warning = createElement(text, "red");
-    insertText(warning, true);
+  } else {
+    var message = createMessage("You must rate the song before downloading", "red")
+    insertMessage(message, true);
   }
 }
 
-function insertText(text, remove) {
+function createMessage(text, color) {
+  return "<div style='text-align:center' id='removeMe'><br /><p style='color:" + color + ";font-size:15px;' id='message'>" + text + "</p></div>"
+}
+
+function insertMessage(text, remove) {
+  if ($("#message").length > 0) {
+    $("#removeMe").remove();
+  }
   if (actionsAllowed) {
-    $insertText.after(text);
+    $insertMessage.after(text);
     if (remove) {
       setTimeout(function() {
         $("#removeMe").remove();
       }, 3000);
     }
   }
-}
-
-function createElement(text, color) {
-  return "<div style='text-align:center' id='removeMe'><br /><p style='color:" + color + ";font-size:15px;'>" + text + "</p></div>"
 }
 
 function playPause(e) {
@@ -84,20 +104,37 @@ function searchArtist(artist) {
   $searchBtn.click();
 }
 
-document.addEventListener('keydown', function(e) {
-  if (!focused) {
-    var keycode = keycodes[e.keyCode];
-    if (keycode) {
-      rate(keycode);
+  
+function createLink(artist) {
+  return "<a href='" + artist + "' class='searchArtist'>" + artist + "</a>";
+}
+
+function createLinks(artist) {
+  var artistNames = artist.text().replace(/\&/g, ",").split(",").filter(function(item) {
+    return item !== " ";
+  });
+  var artistLength = artistNames.length;
+  var searchString = "<span>"
+
+  artistNames.forEach(function(artistName, index) {
+    searchString += createLink(artistName.trim());
+    if (!(artistLength - 1 === index)) {
+      if (artistLength === 2) {
+        searchString += " & ";
+      }
+
+      if ((artistLength > 2)) {
+        searchString += ", ";
+        if (artistLength - 2 === index) {
+          searchString += "& ";
+        }
+      }
     }
-    if (e.keyCode === 68) {
-      download(downloadType);
-    }
-    if (e.keyCode === 80) {
-      playPause();
-    }
-  }
-}, true);
+  });
+
+  searchString += "</span>"
+  artist.html(searchString);
+}
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
   autorate = settings.autorate ? true : false;
@@ -135,13 +172,12 @@ chrome.storage.onChanged.addListener(function(changes, local) {
   }
 });
 
-
 $(function() {
   var url = window.location.href;
-  if (url.match(/(record-pool|charts)/) || url === "http://www.djcity.com/") {
+  if (~disabledURLs.indexOf(url))  {
     actionsAllowed = false;
   }
-  
+
   if (autorate) {
     rate(rating);
     if (downloadToggle) {
@@ -149,6 +185,10 @@ $(function() {
     }
   }
 
+  createLinks($artist);
+  if ($featuring.text() === "Featuring") {
+    createLinks($featured);
+  }
 
   $search.focus(function() {
     focused = true;
@@ -156,42 +196,6 @@ $(function() {
   $search.blur(function() {
     focused = false;
   });
-  
-  function createLink(artist) {
-    return "<a href='" + artist + "' class='searchArtist'>" + artist + "</a>";
-  }
-
-  function createLinks(artist) {
-    var artistNames = artist.text().replace(/\&/g, ",").split(",").filter(function(item) {
-      return item !== " ";
-    });
-    var artistLength = artistNames.length;
-    var searchString = "<span>"
-
-    artistNames.forEach(function(artistName, index) {
-      searchString += createLink(artistName.trim());
-      if (!(artistLength - 1 === index)) {
-        if (artistLength === 2) {
-          searchString += " & ";
-        }
-
-        if ((artistLength > 2)) {
-          searchString += ", ";
-          if (artistLength - 2 === index) {
-            searchString += "& ";
-          }
-        }
-      }
-    });
-
-    searchString += "</span>"
-    artist.html(searchString);
-  }
-
-  createLinks($artist);
-  if ($featuring.text() === "Featuring") {
-    createLinks($featured);
-  }
 
   $(".searchArtist").click(function(e) {
     e.preventDefault();
@@ -199,7 +203,24 @@ $(function() {
   });
 
   $submit.on('click', function() {
-    var success = createElement("Song was downloaded successfully!", "green");
-    insertText(success, false);
+    var success = createMessage("Song was downloaded successfully!", "green");
+    insertMessage(success, false);
+  });
+  
+  $("body").keydown(function(e) {
+    if (!focused) {
+      var keycode = keycodes[e.keyCode];
+      if (keycode) {
+        rate(keycode);
+      }
+      if (e.keyCode === 68) {
+        if (actionsAllowed) {
+          download(downloadType);
+        }
+      }
+      if (e.keyCode === 80) {
+        playPause();
+      }
+    }
   });
 });
