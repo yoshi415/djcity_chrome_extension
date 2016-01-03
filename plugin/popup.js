@@ -17,14 +17,11 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   var currentRating = settings.rating ? settings.rating : 5;
   var checkedValue = "[value=" + currentRating + "]";
-
-  if ($ratings.is(':checked')) {
-    $ratings.filter(checkedValue).prop('checked', true);
-  }
+  $ratings.filter(checkedValue).prop('checked', true);
 
   if (settings.downloadToggle) {
     downloadToggle = true;
-    $dropdownDL.attr('checked', true);
+    $toggleDL.attr('checked', true);
     $dropdownDL.show();
   } else {
     downloadToggle = false;
