@@ -8,6 +8,7 @@ var $featured = $("#artist_details li:nth-child(3) div.artist_details");
 var $featuring = $("#artist_details li:nth-child(3) div.artist_label");
 var playing = false;
 var focused = false;
+var actionsAllowed = true;
 var keycodes = {
   49: 1,
   50: 2,
@@ -42,8 +43,7 @@ function download(songType) {
     if ($(this).find(typeText).text().match(re)) {
       found = true;
       $(this).find(dl).children()[0].click();
-      var success = createElement("Song was downloaded successfully!", "green");
-      insertText(success, false);
+      $submit.trigger('click');
     }
   });
 
@@ -55,11 +55,13 @@ function download(songType) {
 }
 
 function insertText(text, remove) {
-  $insertText.after(text);
-  if (remove) {
-    setTimeout(function() {
-      $("#removeMe").remove();
-    }, 3000);
+  if (actionsAllowed) {
+    $insertText.after(text);
+    if (remove) {
+      setTimeout(function() {
+        $("#removeMe").remove();
+      }, 3000);
+    }
   }
 }
 
@@ -135,6 +137,11 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 
 
 $(function() {
+  var url = window.location.href;
+  if (url.match(/(record-pool|charts)/) || url === "http://www.djcity.com/") {
+    actionsAllowed = false;
+  }
+  
   if (autorate) {
     rate(rating);
     if (downloadToggle) {
@@ -160,10 +167,8 @@ $(function() {
     });
     var artistLength = artistNames.length;
     var searchString = "<span>"
-    // var addlText = "<br />click to search for more songs from the artist"
 
     artistNames.forEach(function(artistName, index) {
-      var lastIndex = artistLength - 1 === index;
       searchString += createLink(artistName.trim());
       if (!(artistLength - 1 === index)) {
         if (artistLength === 2) {
@@ -179,10 +184,6 @@ $(function() {
       }
     });
 
-    // searchString += addlText;
-    // if (artistLength > 1) {
-    //   searchString += "s";
-    // }
     searchString += "</span>"
     artist.html(searchString);
   }
@@ -195,5 +196,10 @@ $(function() {
   $(".searchArtist").click(function(e) {
     e.preventDefault();
     searchArtist($(this).text());
+  });
+
+  $submit.on('click', function() {
+    var success = createElement("Song was downloaded successfully!", "green");
+    insertText(success, false);
   });
 });
