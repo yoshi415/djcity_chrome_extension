@@ -43,22 +43,22 @@ function download(songType) {
   })
 
   if (!found) {
-    if ($("#removeMe").length === 0) {
-      var warning = "<br/><div style='text-align:center'><p style='color:red;font-size:15px;' id='removeMe'>" + songType + " isn't an option on this song! Try manually downloading</p></div>"
+    // if ($("#removeMe").length === 0) {
+      var warning = "<div style='text-align:center' id='removeMe'><br /><p style='color:red;font-size:15px;'>" + songType + " isn't an option on this song! Try manually downloading</p></div>"
       $warning.after(warning);
-    } else {
-      $("#removeMe").show();
-    }
+    // } else {
+    //   $("#removeMe").show();
+    // }
     setTimeout(function() {
-      $("#removeMe").hide();
-    }, 3000)
+      $("#removeMe").remove();
+    }, 3000);
   }
 }
 
-function remove() {
-  $removeMe.hide();
-  console.log("running")
-}
+// function remove() {
+//   $removeMe.hide();
+//   console.log("running")
+// }
 
 function playPause(e) {
   if (!playing) {
@@ -128,9 +128,6 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 
 
 $(function() {
-function log() {
-  console.log("working")
-}
   if (autorate) {
     rate(rating);
   }
@@ -147,7 +144,6 @@ function log() {
 
   $("#searchArtist").click(function(e) {
     e.preventDefault();
-    console.log("artist name", artistName)
     searchArtist(artistName);
   });
 });
