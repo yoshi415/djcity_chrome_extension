@@ -1,5 +1,7 @@
 var autorate, rating, downloadToggle, downloadType;
+var $search = $("input[type=text]");
 var playing = false;
+var focused = false;
 var keycodes = {
   49: 1,
   50: 2,
@@ -52,15 +54,17 @@ function playPause(e) {
 }
 
 document.addEventListener('keydown', function(e) {
-  var keycode = keycodes[e.keyCode];
-  if (keycode) {
-    rate(keycode);
-  }
-  if (e.keyCode === 68) {
-    download("Acap")
-  }
-  if (e.keyCode === 80) {
-    playPause();
+  if (!focused) {
+    var keycode = keycodes[e.keyCode];
+    if (keycode) {
+      rate(keycode);
+    }
+    if (e.keyCode === 68) {
+      download("Acap")
+    }
+    if (e.keyCode === 80) {
+      playPause();
+    }
   }
 }, true);
 
@@ -104,4 +108,11 @@ $(function() {
   if (autorate) {
     rate(rating);
   }
-})
+
+  $search.focus(function() {
+    focused = true;
+  });
+  $search.blur(function() {
+    focused = false;
+  });
+});
