@@ -14,3 +14,6 @@ A record icon will appear in the address bar when you are on http://www.djcity.c
 - Pressing `p` will play / pause the song.
 - If 1-button download is enabled, pressing `d` will download the song with the selected type.
 - If autorate is enabled, the song will be automatically rated at selected rating on page load.
+- If 1-button download & autorate are both enabled, the song will be automatically rated & downloaded on page load.
+- Replaces artist's names with a link to search for more songs from them.
+- Gives message if successful or if there is an error.

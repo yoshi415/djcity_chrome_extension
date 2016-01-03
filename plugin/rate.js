@@ -40,8 +40,8 @@ function download(songType) {
 
   $availFormats.each(function(index, li) {
     if ($(this).find(typeText).text().match(re)) {
-      found = true
-      $(this).find(dl).children()[0].click()
+      found = true;
+      $(this).find(dl).children()[0].click();
       var success = createElement("Song was downloaded successfully!", "green");
       insertText(success, false);
     }
@@ -49,7 +49,7 @@ function download(songType) {
 
   if (!found) {
     var text = songType + " isn't an option on this song! Try manually downloading";
-    var warning = createElement(text, "red")
+    var warning = createElement(text, "red");
     insertText(warning, true);
   }
 }
@@ -110,10 +110,8 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 chrome.storage.onChanged.addListener(function(changes, local) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
-      console.log('autorating enabled')
       autorate = true;
     } else {
-      console.log('autorating disabled')
       autorate = false;
     }
   }
