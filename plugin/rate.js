@@ -1,5 +1,9 @@
 var autorate, rating, downloadToggle, downloadType;
+var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
+var $searchBtn = $(".search_btn");
+var $warning = $("div.header_border_bottom:first");
+var artist = $("#artist_details li:first div.artist_details");
 var playing = false;
 var focused = false;
 var keycodes = {
@@ -17,11 +21,11 @@ var songTypes = {
   "Main":          /^Main$/,
   "Inst":          /^Inst$/,
   "Acap":          /^Acap/
-}
+};
 
 function rate(rating) {
     $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
-    $('#ctl00_PageContent_submit').click();
+    $submit.click();
 }
 
 function download(songType) {
@@ -39,8 +43,21 @@ function download(songType) {
   })
 
   if (!found) {
-    console.log("Format not found")
+    if ($("#removeMe").length === 0) {
+      var warning = "<br/><div style='text-align:center'><p style='color:red;font-size:15px;' id='removeMe'>" + songType + " isn't an option on this song! Try manually downloading</p></div>"
+      $warning.after(warning);
+    } else {
+      $("#removeMe").show();
+    }
+    setTimeout(function() {
+      $("#removeMe").hide();
+    }, 3000)
   }
+}
+
+function remove() {
+  $removeMe.hide();
+  console.log("running")
 }
 
 function playPause(e) {
@@ -53,6 +70,11 @@ function playPause(e) {
   }
 }
 
+function searchArtist(artist) {
+  $search.val(artist);
+  $searchBtn.click();
+}
+
 document.addEventListener('keydown', function(e) {
   if (!focused) {
     var keycode = keycodes[e.keyCode];
@@ -60,7 +82,7 @@ document.addEventListener('keydown', function(e) {
       rate(keycode);
     }
     if (e.keyCode === 68) {
-      download("Acap")
+      download(downloadType);
     }
     if (e.keyCode === 80) {
       playPause();
@@ -104,7 +126,11 @@ chrome.storage.onChanged.addListener(function(changes, local) {
   }
 });
 
+
 $(function() {
+function log() {
+  console.log("working")
+}
   if (autorate) {
     rate(rating);
   }
@@ -114,5 +140,14 @@ $(function() {
   });
   $search.blur(function() {
     focused = false;
+  });
+  
+  var artistName = artist.text();
+  artist.html("<span>" + artistName + " - </span><a href=" + artistName + " id='searchArtist'>search for more songs by artist</a>"  )
+
+  $("#searchArtist").click(function(e) {
+    e.preventDefault();
+    console.log("artist name", artistName)
+    searchArtist(artistName);
   });
 });
