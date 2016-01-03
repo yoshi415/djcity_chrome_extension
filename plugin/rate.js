@@ -1,4 +1,4 @@
-var autorate, rating;
+var autorate, rating, downloadToggle, downloadType;
 var playing = false;
 var keycodes = {
   49: 1,
@@ -8,46 +8,46 @@ var keycodes = {
   53: 5
 };
 var songTypes = {
-  dirty:      /^Dirty$/,
-  clean:      /^Clean$/, 
-  introdirty: /^Intro - Dirty$/,
-  introclean: /^Intro - Clean$/,
-  main:       /^Main$/,
-  inst:       /^Inst$/,
-  acap:       /^Acap - Dirty$/
-
+  "Dirty":         /^Dirty$/,
+  "Clean":         /^Clean$/, 
+  "Intro - Dirty": /^Intro - Dirty$/,
+  "Intro - Clean": /^Intro - Clean$/,
+  "Main":          /^Main$/,
+  "Inst":          /^Inst$/,
+  "Acap":          /^Acap/
 }
-// var $play = $("a.jp-play");
-// var $pause = $("a.jp-pause");
 
 function rate(rating) {
     $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
     $('#ctl00_PageContent_submit').click();
-    // console.log("Rating the song at a ", rating)
-    playPause();
 }
 
 function download(songType) {
   var re = new RegExp(songTypes[songType]);
-  re.test
-  // $("#ad_sublisting").find("li:contains(" + songType + ")").find("div.reviw_tdonw").children()[0].click()
+  var $availFormats = $("#ad_sublisting li");
+  var typeText = ".float_left";
+  var dl = ".reviw_tdonw";
+  var found = false;
+
+  $availFormats.each(function(index, li) {
+    if ($(this).find(typeText).text().match(re)) {
+      found = true
+      $(this).find(dl).children()[0].click()
+    }
+  })
+
+  if (!found) {
+    console.log("Format not found")
+  }
 }
 
 function playPause(e) {
   if (!playing) {
     document.getElementsByClassName("jp-play")[0].click()
     playing = true;
-    // $play.click(function(e) {
-    //   e.preventDefault();
-    // });
-    // $play.trigger('click')
   } else {
     document.getElementsByClassName("jp-pause")[0].click()
     playing = false;
-    // $pause.click(function(e) {
-    //   e.preventDefault();
-    // })
-    // console.log("playin")
   }
 }
 
@@ -57,37 +57,46 @@ document.addEventListener('keydown', function(e) {
     rate(keycode);
   }
   if (e.keyCode === 68) {
-    download()
+    download("Acap")
   }
   if (e.keyCode === 80) {
     playPause();
   }
 }, true);
 
-chrome.storage.local.get(["autorate", "rating"], function(settings) {
-  if (!settings["autorate"]) {
-    autorate = false;
-  } else {
-    autorate = true;
-  }
+chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
+  autorate = settings.autorate ? true : false;
 
-  rating = settings["rating"]; 
+  rating = settings.rating; 
+
+  downloadToggle = settings.downloadToggle ? true : false;
+
+  downloadType = settings.downloadType;
 });
 
 chrome.storage.onChanged.addListener(function(changes, local) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
       autorate = true;
-      // console.log("Enabling autorating for DJCity Easy Rate");
     } else {
       autorate = false;
-      // console.log("Disabling autorate for DJCity Auto Rate");
     }
   }
 
   if (changes.rating) {
     rating = changes.rating.newValue;
-    // console.log("Songs will be rated at a ", rating);
+  }
+
+  if (changes.downloadToggle) {
+    if (changes.downloadToggle.newValue) {
+      downloadToggle = true;
+    } else {
+      downloadToggle = false;
+    }
+  }
+
+  if (changes.downloadType) {
+    downloadType = changes.downloadType.newValue;
   }
 });
 

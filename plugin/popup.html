@@ -4,12 +4,39 @@
     <link rel="stylesheet" type="text/css" href="popup.css">
   </head>
   <body>
-    <span id="center">DJ City Autorate Toggle</span>
-    <div class="toggleAuto">  
-      <input type="checkbox" value="None" id="toggleAuto" name="check" />
+    <div class="center">
+      <p>DJ City 1-Button Download</p>
+    </div>
+    <div class="toggle">
+      <input type="checkbox" value="download" id="toggleDL" />
+      <label for="toggleDL"><span></span></label>
+    </div>
+    
+    <div id="dropdownHeight">
+      <div class="center">
+        <select id="dropdownDL">
+          <option value="Dirty">Dirty</option>
+          <option value="Clean">Clean</option>
+          <option value="Inst">Inst</option>
+          <option value="Acap">Acap</option>
+          <option value="Intro - Dirty">Intro - Dirty</option>
+          <option value="Intro - Clean">Intro - Clean</option>
+        </select>
+      </div>
+      <br />
+    </div>
+
+    <div id="verticalLine"></div>
+
+    <div class="center">
+      <p>DJ City Autorate Toggle</p>
+    </div>
+    <div class="toggle">  
+      <input type="checkbox" value="rate" id="toggleAuto" />
       <label for="toggleAuto"><span></span></label>
     </div>
-    <div id="radio">
+
+    <div id="radioRating">
       <form>
         <label for="ratings" id="radioLabel" ><span id="red">Rating:</span><br>
         <input type="radio" name="rating" value="5"> 5
@@ -19,6 +46,7 @@
         <input type="radio" name="rating" value="1"> 1
       </form>
     </div>
+
     <script src="jquery-1.11.3.min.js"></script>
     <script src="popup.js"></script>
   </body>

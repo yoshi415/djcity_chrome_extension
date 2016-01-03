@@ -1,29 +1,43 @@
 var $toggleAuto = $("#toggleAuto");
 var $ratings = $("input[name='rating']");
-var $radio = $("#radio");
-var toggle;
+var $radioRate = $("#radioRating");
+var $toggleDL = $("#toggleDL");
+var $dropdownDL = $("#dropdownDL");
+var autorate, downloadToggle, downloadType;
 
-chrome.storage.local.get(["autorate", "rating"], function(settings) {
-  if (!settings["autorate"]) {
-    toggle = false;
-    $radio.hide();
-  } else {
-    toggle = true;
+chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
+  if (settings.autorate) {
+    autorate = true;
     $toggleAuto.attr('checked', true);
-    $radio.show();
+    $radioRate.show();
+  } else {
+    toggle = false;
+    $radioRate.hide();
   }
 
-  var currentRating = settings["rating"] ? settings["rating"] : 5;
+  var currentRating = settings.rating ? settings.rating : 5;
   var checkedValue = "[value=" + currentRating + "]";
 
-  if ($ratings.is(':checked') === false) {
+  if ($ratings.is(':checked')) {
     $ratings.filter(checkedValue).prop('checked', true);
   }
+
+  if (settings.downloadToggle) {
+    downloadToggle = true;
+    $dropdownDL.attr('checked', true);
+    $dropdownDL.show();
+  } else {
+    downloadToggle = false;
+    $dropdownDL.hide();
+  }
+
+  var currentType = settings.downloadType ? settings.downloadType : "Dirty";
+  $dropdownDL.val(currentType)
 });
 
 $toggleAuto.click(function() {
-  toggle = !toggle;
-  chrome.storage.local.set({"autorate": toggle});
+  autorate = !autorate;
+  chrome.storage.local.set({"autorate": autorate});
 });
 
 $ratings.click(function() {
@@ -31,12 +45,30 @@ $ratings.click(function() {
   chrome.storage.local.set({"rating": rating});
 });
 
+$toggleDL.click(function() {
+  downloadToggle = !downloadToggle;
+  chrome.storage.local.set({"downloadToggle": downloadToggle})
+});
+
+$dropdownDL.change(function() {
+  downloadType = $("select option:selected").val();
+  chrome.storage.local.set({"downloadType": downloadType});
+});
+
 $(function() {
   $toggleAuto.change(function() {
-    if(this.checked) {
-      $radio.show();
+    if (this.checked) {
+      $radioRate.show();
     } else {
-      $radio.hide();
+      $radioRate.hide();
     }
   });
+
+  $toggleDL.change(function() {
+    if (this.checked) {
+      $dropdownDL.show();
+    } else {
+      $dropdownDL.hide();
+    }
+  })
 });
