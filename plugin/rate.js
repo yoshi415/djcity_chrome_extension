@@ -1,4 +1,4 @@
-var autorate, rating, downloadToggle, downloadType;
+var autorate, rating, downloadToggle, downloadType, songID;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
 var $searchBtn = $(".search_btn");
@@ -10,6 +10,7 @@ var playing = false;
 var focused = false;
 var rated = false;
 var actionsAllowed = true;
+var downloadedSongs = {};
 var keycodes = {
   49: 1,
   50: 2,
@@ -31,7 +32,7 @@ var disabledURLs = [
   "http://www.djcity.com/",
   "http://www.djcity.com/digital/record-pool.aspx",
   "http://www.djcity.com/charts/"
-]
+];
 
 function rate(rating) {
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
@@ -51,7 +52,9 @@ function download(songType) {
       if ($(this).find(typeText).text().match(re)) {
         found = true;
         $(this).find(dlButton).children()[0].click();
-        $submit.trigger('click');
+        trackDownloaded(songType);
+        var success = createMessage("Song was downloaded successfully!", "green");
+        insertMessage(success, false);
       }
     });
 
@@ -136,7 +139,24 @@ function createLinks(artist) {
   artist.html(searchString);
 }
 
-chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
+function trackDownloaded(type) {
+  songID = window.location.search;
+  downloadedSongs[songID].push(type);
+  chrome.storage.local.set({"downloadedSongs": downloadedSongs});
+}
+
+function hasNotBeenDownloaded(type) {
+  songID = window.location.search;
+  downloadedSongs[songID] = downloadedSongs[songID] || [];
+  if (downloadedSongs[songID].indexOf(type) > -1) {
+    var message = createMessage("The " + type + " of this song has already been downloaded by the extension", "green");
+    insertMessage(message, false);
+    return false;
+  } 
+  return true;
+}
+
+chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs"], function(settings) {
   autorate = settings.autorate ? true : false;
 
   rating = settings.rating ? settings.rating : 5; 
@@ -144,6 +164,8 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   downloadToggle = settings.downloadToggle ? true : false;
 
   downloadType = settings.downloadType;
+
+  downloadedSongs = settings.downloadedSongs ? settings.downloadedSongs : {};
 });
 
 chrome.storage.onChanged.addListener(function(changes, local) {
@@ -178,9 +200,13 @@ $(function() {
     actionsAllowed = false;
   }
 
+  if (!hasNotBeenDownloaded(downloadType) || $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!") {
+    rated = true;
+  }
+
   if (autorate) {
     rate(rating);
-    if (downloadToggle) {
+    if (downloadToggle && actionsAllowed && hasNotBeenDownloaded(downloadType)) {
       download(downloadType);
     }
   }
@@ -202,19 +228,21 @@ $(function() {
     searchArtist($(this).text());
   });
 
-  $submit.on('click', function() {
-    var success = createMessage("Song was downloaded successfully!", "green");
-    insertMessage(success, false);
-  });
+  // $submit.on('click', function() {
+  //   var success = createMessage("Song was downloaded successfully!", "green");
+  //   insertMessage(success, false);
+  // });
   
   $("body").keydown(function(e) {
     if (!focused) {
-      var keycode = keycodes[e.keyCode];
-      if (keycode) {
-        rate(keycode);
+      var keyIsNumber = keycodes[e.keyCode];
+      if (keyIsNumber) {
+        if (actionsAllowed && downloadToggle) {
+          rate(keyIsNumber);
+        }
       }
       if (e.keyCode === 68) {
-        if (actionsAllowed) {
+        if (actionsAllowed && hasNotBeenDownloaded(downloadType)) {
           download(downloadType);
         }
       }
