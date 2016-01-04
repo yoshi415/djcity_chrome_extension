@@ -156,6 +156,28 @@ function hasNotBeenDownloaded(type) {
   return true;
 }
 
+function createOverlay() {
+  $("#extensionOverlay").remove();
+  var on = "<a href='#' style='color:#70AB8F'>ON</a>";
+  var off = "<a href='#' style='color:#E25D33'>OFF</a>";
+  var text = "<p id='1btnDL'>1-Button Download: ";
+  text += downloadToggle ? (on + " Track Type Selected: " + downloadType) : off;
+  text += "</p><p id='autorate'> Autorate: ";
+  text += autorate ? on : off;
+  text += "</p>"
+
+  var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold;'>Settings<br />" + text + "</div>"
+  $("body").prepend(overlay);
+
+  $("#autorate").click(function() {
+    chrome.storage.local.set({"autorate": !autorate});
+  });
+
+  $("#1btnDL").click(function() {
+    chrome.storage.local.set({"downloadToggle": !downloadToggle})
+  })
+}
+
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs"], function(settings) {
   autorate = settings.autorate ? true : false;
 
@@ -163,7 +185,7 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   downloadToggle = settings.downloadToggle ? true : false;
 
-  downloadType = settings.downloadType;
+  downloadType = settings.downloadType ? settings.downloadType : "Main";
 
   downloadedSongs = settings.downloadedSongs ? settings.downloadedSongs : {};
 });
@@ -192,6 +214,8 @@ chrome.storage.onChanged.addListener(function(changes, local) {
   if (changes.downloadType) {
     downloadType = changes.downloadType.newValue;
   }
+
+  createOverlay();
 });
 
 $(function() {
@@ -199,6 +223,10 @@ $(function() {
   if (~disabledURLs.indexOf(url))  {
     actionsAllowed = false;
   }
+  
+  // if (actionsAllowed) {
+    createOverlay();
+  // }
 
   if (!hasNotBeenDownloaded(downloadType) || $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!") {
     rated = true;
@@ -227,11 +255,6 @@ $(function() {
     e.preventDefault();
     searchArtist($(this).text());
   });
-
-  // $submit.on('click', function() {
-  //   var success = createMessage("Song was downloaded successfully!", "green");
-  //   insertMessage(success, false);
-  // });
   
   $("body").keydown(function(e) {
     if (!focused) {

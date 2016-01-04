@@ -5,25 +5,29 @@
   "description": "Easily rate DJCity songs",
   "version": "0.1",
   "icons": {
-    "16": "images/djcity16.png",
-    "48": "images/djcity48.png"
+    "16": "assets/images/djcity16.png",
+    "48": "assets/images/djcity48.png"
   },
 
   "page_action": {
-    "default_icon": "images/djcity16.png",
+    "default_icon": "assets/images/djcity16.png",
     "default_popup": "popup.html"
   },
   
   "permissions": [ "tabs", "storage" ],
 
   "background": {
-    "scripts": [ "background.js" ]
+    "scripts": [ "js/background.js" ]
   },
 
   "content_scripts": [
     {
       "matches": [ "http://*.djcity.com/*", "http://*.djcity.co.uk/*" ],
-      "js": [ "jquery-1.11.3.min.js", "rate.js", "popup.js" ]
+      "js": [ "assets/js/jquery-1.11.3.min.js", "js/rate.js", "js/popup.js" ]
     }
+  ],
+
+  "web_accessible_resources": [
+    
   ]  
 }
