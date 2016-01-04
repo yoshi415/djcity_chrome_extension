@@ -14,10 +14,6 @@ input {
   text-align: center;
 }
 
-#dropdownHeight {
-  height: 40px;
-}
-
 #verticalLine {
   width: 100%;
   border-top: solid #DCD8CF;
@@ -26,6 +22,12 @@ input {
 select {
   background: transparent;
   color: #E25D33;
+}
+
+.disableOptions {
+  -webkit-filter: blur(3px);
+  pointer-events: none;
+  cursor: default;
 }
 
 .toggle {

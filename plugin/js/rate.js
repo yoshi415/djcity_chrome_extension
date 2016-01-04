@@ -30,6 +30,8 @@ var songTypes = {
 };
 var disabledURLs = [
   "http://www.djcity.com/",
+  "http://www.djcity.com/#",
+  "http://www.djcity.com/default.aspx",
   "http://www.djcity.com/digital/record-pool.aspx",
   "http://www.djcity.com/charts/"
 ];
@@ -41,36 +43,39 @@ function rate(rating) {
 }
 
 function download(songType) {
-  if (rated) {
-    var re = new RegExp(songTypes[songType]);
-    var $availFormats = $("#ad_sublisting li");
-    var typeText = ".float_left";
-    var dlButton = ".reviw_tdonw";
-    var found = false;
+  var downloadBtnExists = $(".reviw_tdonw").length > 0;
+  if (downloadBtnExists) {
+    if (rated) {
+      var re = new RegExp(songTypes[songType]);
+      var $availFormats = $("#ad_sublisting li");
+      var typeText = ".float_left";
+      var dlButton = ".reviw_tdonw";
+      var found = false;
 
-    $availFormats.each(function(index, li) {
-      if ($(this).find(typeText).text().match(re)) {
-        found = true;
-        $(this).find(dlButton).children()[0].click();
-        trackDownloaded(songType);
-        var success = createMessage("Song was downloaded successfully!", "green");
-        insertMessage(success, false);
+      $availFormats.each(function(index, li) {
+        if ($(this).find(typeText).text().match(re)) {
+          found = true;
+          $(this).find(dlButton).children()[0].click();
+          trackDownloaded(songType);
+          var success = createMessage("Song was downloaded successfully!", "green");
+          insertMessage(success, false);
+        }
+      });
+
+      if (!found) {
+        var text = songType + " isn't an track option on this song! Try another option";
+        var message = createMessage(text, "red");
+        if (autorate && downloadToggle) {
+          insertMessage(message, false);
+        } else {
+          insertMessage(message, true);
+        }
+
       }
-    });
-
-    if (!found) {
-      var text = songType + " isn't an track option on this song! Try another option";
-      var message = createMessage(text, "red");
-      if (autorate && downloadToggle) {
-        insertMessage(message, false);
-      } else {
-        insertMessage(message, true);
-      }
-
+    } else {
+      var message = createMessage("You must rate the song before downloading", "red")
+      insertMessage(message, true);
     }
-  } else {
-    var message = createMessage("You must rate the song before downloading", "red")
-    insertMessage(message, true);
   }
 }
 
@@ -149,25 +154,34 @@ function hasNotBeenDownloaded(type) {
   songID = window.location.search;
   downloadedSongs[songID] = downloadedSongs[songID] || [];
   if (downloadedSongs[songID].indexOf(type) > -1) {
-    var message = createMessage("The " + type + " of this song has already been downloaded by the extension", "green");
+    var message = createMessage("The " + type + " version of this song has already been downloaded by the extension", "green");
     insertMessage(message, false);
     return false;
   } 
   return true;
 }
 
+function onOff(id, onOff) {
+  var color = onOff === "ON" ? "#70AB8F" : "#ff030d";
+  return "<a href='#' id='" + id + "'' style='color:" + color + "'>" + onOff + "</a>";
+}
+
 function createOverlay() {
   $("#extensionOverlay").remove();
-  var on = "<a href='#' style='color:#70AB8F'>ON</a>";
-  var off = "<a href='#' style='color:#E25D33'>OFF</a>";
-  var text = "<p id='1btnDL'>1-Button Download: ";
-  text += downloadToggle ? (on + " Track Type Selected: " + downloadType) : off;
-  text += "</p><p id='autorate'> Autorate: ";
-  text += autorate ? on : off;
+  var ratingsDropdown = "<select id='dropdownDL' style='background:transparent; color:white;'><option>Dirty</option><option>Clean</option><option>Inst</option><option>Acap</option><option>Main</option><option>Intro - Dirty</option><option>Intro - Clean</option></select>";
+  // var radio = "<input type='radio' name='rating' value='5'> 5<input type='radio' name='rating' value='4'> 4<input type='radio' name='rating' value='3'> 3<input type='radio' name='rating' value='2'> 2<input type='radio' name='rating' value='1'> 1";
+  var text = "<p>Autorate: ";
+  // text += autorate ? onOff("autorate", "ON") + " Rating: " + radio 
+  text += autorate ? onOff("autorate", "ON")
+                   : onOff("autorate", "OFF");
+  text += "</p><p>1-Button Download: ";
+  text += downloadToggle ? onOff("1btnDL", "ON") + "<br> Track Type: " + ratingsDropdown
+                         : onOff("1btnDL", "OFF");
   text += "</p>"
 
-  var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold;'>Settings<br />" + text + "</div>"
-  $("body").prepend(overlay);
+  var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold; font-size: 12px'><div style='padding:0 0 0 5px;>'>" + text + "</div>"
+  $("#container").prepend(overlay);
+  $("#dropdownDL").val(downloadType);
 
   $("#autorate").click(function() {
     chrome.storage.local.set({"autorate": !autorate});
@@ -176,6 +190,11 @@ function createOverlay() {
   $("#1btnDL").click(function() {
     chrome.storage.local.set({"downloadToggle": !downloadToggle})
   })
+
+  $("#dropdownDL").change(function() {
+    downloadType = $("select option:selected").text();
+    chrome.storage.local.set({"downloadType": downloadType});
+  });
 }
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs"], function(settings) {

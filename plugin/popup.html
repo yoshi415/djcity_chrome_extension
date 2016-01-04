@@ -4,50 +4,53 @@
     <link rel="stylesheet" type="text/css" href="assets/styles/popup.css">
   </head>
   <body>
-    <div class="center">
-      <p>DJ City 1-Button Download</p>
-    </div>
-    <div class="toggle">
-      <input type="checkbox" value="download" id="toggleDL" />
-      <label for="toggleDL"><span></span></label>
-    </div>
-    
-    <div id="dropdownHeight" class="center">
-        <select id="dropdownDL">
-          <option value="Dirty">Dirty</option>
-          <option value="Clean">Clean</option>
-          <option value="Inst">Inst</option>
-          <option value="Acap">Acap</option>
-          <option value="Main">Main</option>
-          <option value="Intro - Dirty">Intro - Dirty</option>
-          <option value="Intro - Clean">Intro - Clean</option>
-        </select>
-      <br />
+    <div>
+      <div class="center">
+        <p>DJ City Autorate</p>
+      </div>
+      <div class="toggle">  
+        <input type="checkbox" value="rate" id="toggleAuto" />
+        <label for="toggleAuto"><span></span></label>
+      </div>
+
+      <div id="radioRating">
+        <form>
+          <label for="ratings" id="radioLabel" /><span id="red">Rating:</span><br>
+          <input type="radio" name="rating" value="5"> 5
+          <input type="radio" name="rating" value="4"> 4
+          <input type="radio" name="rating" value="3"> 3
+          <input type="radio" name="rating" value="2"> 2
+          <input type="radio" name="rating" value="1"> 1
+        </form>
+      </div>
     </div>
 
     <div id="verticalLine"></div>
 
-    <div class="center">
-      <p>DJ City Autorate</p>
-    </div>
-    <div class="toggle">  
-      <input type="checkbox" value="rate" id="toggleAuto" />
-      <label for="toggleAuto"><span></span></label>
-    </div>
-
-    <div id="radioRating">
-      <form>
-        <label for="ratings" id="radioLabel" ><span id="red">Rating:</span><br>
-        <input type="radio" name="rating" value="5"> 5
-        <input type="radio" name="rating" value="4"> 4
-        <input type="radio" name="rating" value="3"> 3
-        <input type="radio" name="rating" value="2"> 2
-        <input type="radio" name="rating" value="1"> 1
-      </form>
+    <div> 
+      <div class="center">
+        <p>DJ City 1-Button Download</p>
+      </div>
+      <div class="toggle">
+        <input type="checkbox" value="download" id="toggleDL" />
+        <label for="toggleDL"><span></span></label>
+      </div>
+      
+      <div class="center">
+          <select id="dropdownDL">
+            <option>Dirty</option>
+            <option>Clean</option>
+            <option>Inst</option>
+            <option>Acap</option>
+            <option>Main</option>
+            <option>Intro - Dirty</option>
+            <option>Intro - Clean</option>
+          </select>
+        <br />
+      </div>
     </div>
 
     <script src="assets/js/jquery-1.11.3.min.js"></script>
-    <script src="assets/js/handlebars-v.0.5.js"></script>
     <script src="js/popup.js"></script>
   </body>
 </html>

@@ -9,10 +9,10 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   if (settings.autorate) {
     autorate = true;
     $toggleAuto.attr('checked', true);
-    $radioRate.show();
+    $radioRate.removeClass("disableOptions");
   } else {
     toggle = false;
-    $radioRate.hide();
+    $radioRate.addClass("disableOptions");
   }
 
   var currentRating = settings.rating ? settings.rating : 5;
@@ -22,14 +22,14 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   if (settings.downloadToggle) {
     downloadToggle = true;
     $toggleDL.attr('checked', true);
-    $dropdownDL.show();
+    $dropdownDL.removeClass("disableOptions");
   } else {
     downloadToggle = false;
-    $dropdownDL.hide();
+    $dropdownDL.addClass("disableOptions");
   }
 
   var currentType = settings.downloadType ? settings.downloadType : "Dirty";
-  $dropdownDL.val(currentType)
+  $dropdownDL.val(currentType);
 });
 
 $toggleAuto.click(function() {
@@ -44,26 +44,26 @@ $ratings.click(function() {
 
 $toggleDL.click(function() {
   downloadToggle = !downloadToggle;
-  chrome.storage.local.set({"downloadToggle": downloadToggle})
+  chrome.storage.local.set({"downloadToggle": downloadToggle});
 });
 
 $dropdownDL.change(function() {
-  downloadType = $("select option:selected").val();
+  downloadType = $("select option:selected").text();
   chrome.storage.local.set({"downloadType": downloadType});
 });
 
 $toggleAuto.change(function() {
   if (this.checked) {
-    $radioRate.show();
+    $radioRate.removeClass("disableOptions");
   } else {
-    $radioRate.hide();
+    $radioRate.addClass("disableOptions");
   }
 });
 
 $toggleDL.change(function() {
   if (this.checked) {
-    $dropdownDL.show();
+    $dropdownDL.removeClass("disableOptions");
   } else {
-    $dropdownDL.hide();
+    $radioRate.addClass("disableOptions");
   }
-})
+});
