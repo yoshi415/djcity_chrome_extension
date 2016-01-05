@@ -4,6 +4,7 @@ var $radioRate = $("#radioRating");
 var $toggleDL = $("#toggleDL");
 var $dropdownDL = $("#dropdownDL");
 var autorate, downloadToggle, downloadType;
+console.log('test')
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
   if (settings.autorate) {
@@ -64,6 +65,6 @@ $toggleDL.change(function() {
   if (this.checked) {
     $dropdownDL.removeClass("disableOptions");
   } else {
-    $radioRate.addClass("disableOptions");
+    $dropdownDL.addClass("disableOptions");
   }
 });
