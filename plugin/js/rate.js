@@ -54,7 +54,7 @@ function download(songType) {
   var downloadBtnExists = $(".reviw_tdonw").length > 0;
   if (downloadBtnExists) {
     if (rated) {
-      var re = new RegExp(songTypes[0][songType]);
+      var re = new RegExp(songTypes[songType][1]);
       var $availFormats = $("#ad_sublisting li");
       var typeText = ".float_left";
       var dlButton = ".reviw_tdonw";
@@ -207,6 +207,27 @@ function createOverlay() {
   }
 }
 
+function debounceResize() {
+  var timeout;
+  return function() {
+    function delayed() {
+      var width = $(document).width();
+      if (width < 1300) {
+        $("#extensionOverlay").remove();
+      } else {
+        createOverlay();
+      }
+      timeout = null;
+    }
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+    timeout = setTimeout(delayed, 75);
+  }
+}
+
+var debouncedResize = debounceResize();
+
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
   autorate = settings.autorate ? true : false;
 
@@ -220,7 +241,7 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   displayOverlay = settings.displayOverlay ? true : false;
 
-  downloadValue = downloadValues[1][downloadType];
+  downloadValue = songTypes[downloadType][0];
 });
 
 chrome.storage.onChanged.addListener(function(changes, local) {
@@ -246,7 +267,7 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 
   if (changes.downloadType) {
     downloadType = changes.downloadType.newValue;
-    downloadValue = downloadValues[1][downloadType];
+    downloadValue = downloadValues[downloadType][0];
   }
 
   if (changes.displayOverlay) {
@@ -262,7 +283,9 @@ $(function() {
     actionsAllowed = false;
   }
   
-  createOverlay();
+  if ($(document).width() > 1300) {
+    createOverlay();
+  }
 
   if (!hasNotBeenDownloaded(downloadType) || $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!") {
     rated = true;
@@ -321,6 +344,8 @@ $(function() {
       }
     }
   });
+
+  $(window).resize(debouncedResize);
 
   $("#dropdownDL").val(downloadValue).trigger("change");
 });
