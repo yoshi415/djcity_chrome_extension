@@ -1,4 +1,4 @@
-var autorate, rating, downloadToggle, downloadType, songID;
+var autorate, rating, downloadToggle, downloadType, songID, displayOverlay;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
 var $searchBtn = $(".search_btn");
@@ -168,36 +168,38 @@ function onOff(id, onOff) {
 
 function createOverlay() {
   $("#extensionOverlay").remove();
-  var ratingsDropdown = "<select id='dropdownDL' style='background:transparent; color:white;'><option>Dirty</option><option>Clean</option><option>Inst</option><option>Acap</option><option>Main</option><option>Intro - Dirty</option><option>Intro - Clean</option></select>";
-  // var radio = "<input type='radio' name='rating' value='5'> 5<input type='radio' name='rating' value='4'> 4<input type='radio' name='rating' value='3'> 3<input type='radio' name='rating' value='2'> 2<input type='radio' name='rating' value='1'> 1";
-  var text = "<p>Autorate: ";
-  // text += autorate ? onOff("autorate", "ON") + " Rating: " + radio 
-  text += autorate ? onOff("autorate", "ON")
-                   : onOff("autorate", "OFF");
-  text += "</p><p>1-Button Download: ";
-  text += downloadToggle ? onOff("1btnDL", "ON") + "<br> Track Type: " + ratingsDropdown
-                         : onOff("1btnDL", "OFF");
-  text += "</p>"
+  if (displayOverlay) {
+    var ratingsDropdown = "<select id='dropdownDL' style='background:transparent; color:white;'><option>Dirty</option><option>Clean</option><option>Inst</option><option>Acap</option><option>Main</option><option>Intro - Dirty</option><option>Intro - Clean</option></select>";
+    // var radio = "<input type='radio' name='rating' value='5'> 5<input type='radio' name='rating' value='4'> 4<input type='radio' name='rating' value='3'> 3<input type='radio' name='rating' value='2'> 2<input type='radio' name='rating' value='1'> 1";
+    var text = "<p>Autorate: ";
+    // text += autorate ? onOff("autorate", "ON") + " Rating: " + radio 
+    text += autorate ? onOff("autorate", "ON")
+                     : onOff("autorate", "OFF");
+    text += "</p><p>1-Button Download: ";
+    text += downloadToggle ? onOff("1btnDL", "ON") + "<br> Track Type: " + ratingsDropdown
+                           : onOff("1btnDL", "OFF");
+    text += "</p>"
 
-  var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold; font-size: 12px'><div style='padding:0 0 0 5px;>'>" + text + "</div>"
-  $("#container").prepend(overlay);
-  $("#dropdownDL").val(downloadType);
+    var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold; font-size: 12px'><div style='padding:0 0 0 5px;>'>" + text + "</div>"
+    $("#container").prepend(overlay);
+    $("#dropdownDL").val(downloadType);
 
-  $("#autorate").click(function() {
-    chrome.storage.local.set({"autorate": !autorate});
-  });
+    $("#autorate").click(function() {
+      chrome.storage.local.set({"autorate": !autorate});
+    });
 
-  $("#1btnDL").click(function() {
-    chrome.storage.local.set({"downloadToggle": !downloadToggle})
-  })
+    $("#1btnDL").click(function() {
+      chrome.storage.local.set({"downloadToggle": !downloadToggle})
+    })
 
-  $("#dropdownDL").change(function() {
-    downloadType = $("select option:selected").text();
-    chrome.storage.local.set({"downloadType": downloadType});
-  });
+    $("#dropdownDL").change(function() {
+      downloadType = $("select option:selected").text();
+      chrome.storage.local.set({"downloadType": downloadType});
+    });
+  }
 }
 
-chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs"], function(settings) {
+chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
   autorate = settings.autorate ? true : false;
 
   rating = settings.rating ? settings.rating : 5; 
@@ -207,6 +209,8 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   downloadType = settings.downloadType ? settings.downloadType : "Main";
 
   downloadedSongs = settings.downloadedSongs ? settings.downloadedSongs : {};
+
+  displayOverlay = settings.displayOverlay ? true : false;
 });
 
 chrome.storage.onChanged.addListener(function(changes, local) {
@@ -234,6 +238,13 @@ chrome.storage.onChanged.addListener(function(changes, local) {
     downloadType = changes.downloadType.newValue;
   }
 
+  if (changes.displayOverlay) {
+    displayOverlay = changes.displayOverlay.newValue;
+    // if (!displayOverlay) {
+    //   $("#extension")
+    // }
+  }
+
   createOverlay();
 });
 
@@ -243,9 +254,7 @@ $(function() {
     actionsAllowed = false;
   }
   
-  // if (actionsAllowed) {
-    createOverlay();
-  // }
+  createOverlay();
 
   if (!hasNotBeenDownloaded(downloadType) || $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!") {
     rated = true;

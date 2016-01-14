@@ -3,10 +3,10 @@ var $ratings = $("input[name='rating']");
 var $radioRate = $("#radioRating");
 var $toggleDL = $("#toggleDL");
 var $dropdownDL = $("#dropdownDL");
-var autorate, downloadToggle, downloadType;
-console.log('test')
+var $toggleOverlay = $("#toggleOverlay")
+var autorate, downloadToggle, downloadType, displayOverlay;
 
-chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"], function(settings) {
+chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "displayOverlay"], function(settings) {
   if (settings.autorate) {
     autorate = true;
     $toggleAuto.attr('checked', true);
@@ -31,6 +31,13 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   var currentType = settings.downloadType ? settings.downloadType : "Dirty";
   $dropdownDL.val(currentType);
+  
+  if (settings.displayOverlay) {
+    displayOverlay = true;
+    $toggleOverlay.attr('checked', true);
+  } else {
+    displayOverlay = false;
+  }
 });
 
 $toggleAuto.click(function() {
@@ -46,6 +53,12 @@ $ratings.click(function() {
 $toggleDL.click(function() {
   downloadToggle = !downloadToggle;
   chrome.storage.local.set({"downloadToggle": downloadToggle});
+});
+
+$toggleOverlay.click(function() {
+  displayOverlay = !displayOverlay;
+  console.log(displayOverlay)
+  chrome.storage.local.set({"displayOverlay": displayOverlay});
 });
 
 $dropdownDL.change(function() {
