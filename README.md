@@ -1,6 +1,6 @@
 # DJCity Chrome extension
 
-A Chrome extension for DJCity.com allowing easy rating & downloading.
+A Chrome extension for DJCity.com allowing easy rating & downloading. Replaces artist's names with a link to search for more songs from them. Displays message if there is an error or if the download is successful.
 
 ## Usage
 
@@ -12,8 +12,8 @@ A record icon will appear in the address bar when you are on http://www.djcity.c
 - If autorate is enabled, the song will be automatically rated at selected rating on page load.
 - If 1-button download & autorate are both enabled, the song will be automatically rated & downloaded on page load.
   Will only download each type of song once with this option.
-- Replaces artist's names with a link to search for more songs from them.
-- Displays message if there is an error or if the download is successful.
+- Use overlay (top left) of screen to toggle options as well.
+- When overlay is visible, press `shift + arrow-up` or `shift + arrow-down` to change between song types.
 
 ## Installation
 
@@ -21,5 +21,10 @@ A record icon will appear in the address bar when you are on http://www.djcity.c
 2. Open Chrome -> Settings -> Extensions or chrome://extensions
 3. Click 'Developer Mode' in top right & then 'Load unpacked extension...'
 4. Select 'plugin' folder & unclick 'Developer Mode'
+ 
+## Images
+
+![alt text](https://cloud.githubusercontent.com/assets/10872765/12318530/e3873230-ba4f-11e5-83ec-b72fd8e49bf8.png "Options")
+![alt text](https://cloud.githubusercontent.com/assets/10872765/12318535/e8a9f91e-ba4f-11e5-81c6-6200522d692f.png "Overlay")
 
 TODO: link to chrome store
