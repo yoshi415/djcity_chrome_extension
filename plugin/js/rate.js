@@ -1,4 +1,4 @@
-var autorate, rating, downloadToggle, downloadType, songID, displayOverlay;
+var autorate, rating, downloadToggle, downloadType, songID, displayOverlay, downloadValue;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
 var $searchBtn = $(".search_btn");
@@ -19,15 +19,23 @@ var keycodes = {
   53: 5
 };
 var songTypes = {
-  "Dirty":         /^Dirty$/,
-  "Clean":         /^Clean$/, 
-  "Intro - Dirty": /^Intro - Dirty$/,
-  "Intro - Clean": /^Intro - Clean$/,
-  "Main":          /^Main$/,
-  "Inst":          /^Inst$/,
-  "Acap":          /^Acap/, 
-  "Main":          /^Main/
+  "Dirty":         [ 0, /^Dirty$/ ],
+  "Clean":         [ 1, /^Clean$/ ], 
+  "Intro - Dirty": [ 2, /^Intro - Dirty$/ ],
+  "Intro - Clean": [ 3, /^Intro - Clean$/ ],
+  "Main":          [ 4, /^Main$/ ],
+  "Inst":          [ 5, /^Inst$/ ],
+  "Acap":          [ 6, /^Acap/ ]
 };
+// var downloadValues = {
+//   "Dirty":         0,
+//   "Clean":         1, 
+//   "Inst":          2,
+//   "Acap":          3,
+//   "Main":          4,
+//   "Intro - Dirty": 5,
+//   "Intro - Clean": 6
+// };
 var disabledURLs = [
   "http://www.djcity.com/",
   "http://www.djcity.com/#",
@@ -39,14 +47,14 @@ var disabledURLs = [
 function rate(rating) {
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
   $submit.click();
-  rated = true
+  rated = true;
 }
 
 function download(songType) {
   var downloadBtnExists = $(".reviw_tdonw").length > 0;
   if (downloadBtnExists) {
     if (rated) {
-      var re = new RegExp(songTypes[songType]);
+      var re = new RegExp(songTypes[0][songType]);
       var $availFormats = $("#ad_sublisting li");
       var typeText = ".float_left";
       var dlButton = ".reviw_tdonw";
@@ -140,7 +148,7 @@ function createLinks(artist) {
     }
   });
 
-  searchString += "</span>"
+  searchString += "</span>";
   artist.html(searchString);
 }
 
@@ -169,7 +177,7 @@ function onOff(id, onOff) {
 function createOverlay() {
   $("#extensionOverlay").remove();
   if (displayOverlay) {
-    var ratingsDropdown = "<select id='dropdownDL' style='background:transparent; color:white;'><option>Dirty</option><option>Clean</option><option>Inst</option><option>Acap</option><option>Main</option><option>Intro - Dirty</option><option>Intro - Clean</option></select>";
+    var ratingsDropdown = "<select id='dropdownDL' style='background:transparent; color:white;'><option value='0'>Dirty</option><option value='1'>Clean</option><option value='2'>Inst</option><option value='3'>Acap</option><option value='4'>Main</option><option value='5'>Intro - Dirty</option><option value='6'>Intro - Clean</option></select>";
     // var radio = "<input type='radio' name='rating' value='5'> 5<input type='radio' name='rating' value='4'> 4<input type='radio' name='rating' value='3'> 3<input type='radio' name='rating' value='2'> 2<input type='radio' name='rating' value='1'> 1";
     var text = "<p>Autorate: ";
     // text += autorate ? onOff("autorate", "ON") + " Rating: " + radio 
@@ -178,11 +186,11 @@ function createOverlay() {
     text += "</p><p>1-Button Download: ";
     text += downloadToggle ? onOff("1btnDL", "ON") + "<br> Track Type: " + ratingsDropdown
                            : onOff("1btnDL", "OFF");
-    text += "</p>"
+    text += "</p>";
 
     var overlay = "<div id='extensionOverlay' style='position:absolute; z-index:2147483647; color:white; font-family: GothamHTFBold; font-size: 12px'><div style='padding:0 0 0 5px;>'>" + text + "</div>"
     $("#container").prepend(overlay);
-    $("#dropdownDL").val(downloadType);
+    $("#dropdownDL").val(downloadValue).attr("selected", "selected");
 
     $("#autorate").click(function() {
       chrome.storage.local.set({"autorate": !autorate});
@@ -206,11 +214,13 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   downloadToggle = settings.downloadToggle ? true : false;
 
-  downloadType = settings.downloadType ? settings.downloadType : "Main";
+  downloadType = settings.downloadType ? settings.downloadType : "Dirty";
 
   downloadedSongs = settings.downloadedSongs ? settings.downloadedSongs : {};
 
   displayOverlay = settings.displayOverlay ? true : false;
+
+  downloadValue = downloadValues[1][downloadType];
 });
 
 chrome.storage.onChanged.addListener(function(changes, local) {
@@ -236,13 +246,11 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 
   if (changes.downloadType) {
     downloadType = changes.downloadType.newValue;
+    downloadValue = downloadValues[1][downloadType];
   }
 
   if (changes.displayOverlay) {
     displayOverlay = changes.displayOverlay.newValue;
-    // if (!displayOverlay) {
-    //   $("#extension")
-    // }
   }
 
   createOverlay();
@@ -300,6 +308,19 @@ $(function() {
       if (e.keyCode === 80) {
         playPause();
       }
+
+      if (e.shiftKey === true) {
+        if (e.keyCode === 38) {
+          downloadValue = downloadValue === 0 ? 6 : downloadValue - 1;
+          $("#dropdownDL").val(downloadValue).trigger("change");
+        }
+        if (e.keyCode === 40) {
+          downloadValue = downloadValue === 6 ? 0 : downloadValue + 1;
+          $("#dropdownDL").val(downloadValue).trigger("change");
+        }
+      }
     }
   });
+
+  $("#dropdownDL").val(downloadValue).trigger("change");
 });
