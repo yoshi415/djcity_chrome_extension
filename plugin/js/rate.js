@@ -207,26 +207,31 @@ function createOverlay() {
   }
 }
 
-function debounceResize() {
-  var timeout;
-  return function() {
-    function delayed() {
-      var width = $(document).width();
-      if (width < 1300) {
-        $("#extensionOverlay").remove();
-      } else {
-        createOverlay();
-      }
-      timeout = null;
-    }
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-    timeout = setTimeout(delayed, 75);
+function toggleOverlayOnResize() {
+  var width = $(document).width();
+  if (width < 1300) {
+    $("#extensionOverlay").remove();
+  } else {
+    createOverlay();
   }
 }
 
-var debouncedResize = debounceResize();
+var throttledResize = (function() {
+  var last, deferTimer, threshhold = 75;
+  return function () {
+    var now = +(new Date());
+    if (last && now < last + threshhold) {
+      clearTimeout(deferTimer);
+      deferTimer = setTimeout(function () {
+        last = now;
+        toggleOverlayOnResize();
+      }, threshhold);
+    } else {
+      last = now;
+      toggleOverlayOnResize();
+    }
+  };
+})();
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
   autorate = settings.autorate ? true : false;
@@ -345,7 +350,7 @@ $(function() {
     }
   });
 
-  $(window).resize(debouncedResize);
+  $(window).resize(throttledResize);
 
   $("#dropdownDL").val(downloadValue).trigger("change");
 });
