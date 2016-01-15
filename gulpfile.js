@@ -25,10 +25,6 @@ gulp.task('buildPopup', function() {
   build('popup');
 });
 
-gulp.task('watch', function() {
-  gulp.watch('source/**/*.js');
-});
-
 gulp.task('build', [
   'buildBackground', 
   'buildContent', 
@@ -38,3 +34,7 @@ gulp.task('build', [
     console.log("Build complete!");
   }
 );
+
+gulp.task('watch', function() {
+    gulp.watch('plugin/source/**/*.js', [ 'build' ]);
+});

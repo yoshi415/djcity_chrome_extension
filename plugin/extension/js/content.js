@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = {
-  keyCodes: { // this is config
+  keyCodes: {
   49: 1,
   50: 2,
   51: 3,
@@ -27,8 +27,8 @@ module.exports = {
   ]
 };
 },{}],2:[function(require,module,exports){
-var config = require('./config');
-console.log(config.keyCodes);
+var Config = require('./config');
+var Storage = require('../utils/chromeStorage');
 
 var autorate, rating, downloadToggle, downloadType, songID, displayOverlay, downloadValue;
 var $submit = $('#ctl00_PageContent_submit');
@@ -43,29 +43,7 @@ var focused = false;
 var rated = false;
 var actionsAllowed = true;
 var downloadedSongs = {};
-var keycodes = {
-  49: 1,
-  50: 2,
-  51: 3,
-  52: 4,
-  53: 5
-};
-var songTypes = {
-  "Dirty":         [ 0, /^Dirty$/ ],
-  "Clean":         [ 1, /^Clean$/ ], 
-  "Intro - Dirty": [ 2, /^Intro - Dirty$/ ],
-  "Intro - Clean": [ 3, /^Intro - Clean$/ ],
-  "Main":          [ 4, /^Main$/ ],
-  "Inst":          [ 5, /^Inst$/ ],
-  "Acap":          [ 6, /^Acap/ ]
-};
-var disabledURLs = [
-  "http://www.djcity.com/",
-  "http://www.djcity.com/#",
-  "http://www.djcity.com/default.aspx",
-  "http://www.djcity.com/digital/record-pool.aspx",
-  "http://www.djcity.com/charts/"
-];
+
 
 function rate(rating) {
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
@@ -77,7 +55,7 @@ function download(songType) {
   var downloadBtnExists = $(".reviw_tdonw").length > 0;
   if (downloadBtnExists) {
     if (rated) {
-      var re = new RegExp(songTypes[songType][1]);
+      var re = new RegExp(Config.songTypes[songType][1]);
       var $availFormats = $("#ad_sublisting li");
       var typeText = ".float_left";
       var dlButton = ".reviw_tdonw";
@@ -178,7 +156,7 @@ function createLinks(artist) {
 function trackDownloaded(type) {
   songID = window.location.search;
   downloadedSongs[songID].push(type);
-  chrome.storage.local.set({"downloadedSongs": downloadedSongs});
+  Storage.set({"downloadedSongs": downloadedSongs});
 }
 
 function hasNotBeenDownloaded(type) {
@@ -216,16 +194,16 @@ function createOverlay() {
     $("#dropdownDL").val(downloadValue).attr("selected", "selected");
 
     $("#autorate").click(function() {
-      chrome.storage.local.set({"autorate": !autorate});
+      Storage.set({"autorate": !autorate});
     });
 
     $("#1btnDL").click(function() {
-      chrome.storage.local.set({"downloadToggle": !downloadToggle})
+      Storage.set({"downloadToggle": !downloadToggle})
     })
 
     $("#dropdownDL").change(function() {
       downloadType = $("select option:selected").text();
-      chrome.storage.local.set({"downloadType": downloadType});
+      Storage.set({"downloadType": downloadType});
     });
   }
 }
@@ -256,7 +234,7 @@ var throttledResize = (function() {
   };
 })();
 
-chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
+Storage.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
   autorate = settings.autorate ? true : false;
 
   rating = settings.rating ? settings.rating : 5; 
@@ -269,10 +247,10 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
   displayOverlay = settings.displayOverlay ? true : false;
 
-  downloadValue = songTypes[downloadType][0];
+  downloadValue = Config.songTypes[downloadType][0];
 });
 
-chrome.storage.onChanged.addListener(function(changes, local) {
+Storage.listen(function(changes, local) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
       autorate = true;
@@ -307,7 +285,7 @@ chrome.storage.onChanged.addListener(function(changes, local) {
 
 $(function() {
   var url = window.location.href;
-  if (~disabledURLs.indexOf(url))  {
+  if (~Config.disabledURLs.indexOf(url))  {
     actionsAllowed = false;
   }
   
@@ -345,7 +323,7 @@ $(function() {
   
   $("body").keydown(function(e) {
     if (!focused) {
-      var keyIsNumber = keycodes[e.keyCode];
+      var keyIsNumber = config.keyCodes[e.keyCode];
       if (keyIsNumber) {
         if (actionsAllowed && downloadToggle) {
           rate(keyIsNumber);
@@ -376,10 +354,16 @@ $(function() {
   $(window).resize(throttledResize);
 
   $("#dropdownDL").val(downloadValue).trigger("change");
-
-  // require([''], function(config) {
-  //   console.log(config.disabledURLs)
-  // })
 });
 
-},{"./config":1}]},{},[2]);
+},{"../utils/chromeStorage":3,"./config":1}],3:[function(require,module,exports){
+exports.set = function(data) {
+  return chrome.storage.local.set;
+};
+exports.get = function() {
+  return chrome.storage.local.get;
+};
+exports.listen = function() {
+  return chrome.storage.onChanged.addListener;
+};
+},{}]},{},[2]);

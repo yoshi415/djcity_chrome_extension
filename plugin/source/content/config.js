@@ -1,5 +1,5 @@
 module.exports = {
-  keyCodes: { // this is config
+  keyCodes: {
   49: 1,
   50: 2,
   51: 3,
