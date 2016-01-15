@@ -1,0 +1,33 @@
+{
+  "name": "djcity_chrome_extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension for DJCity.com allowing easy rating & downloading. Replaces artist's names with a link to search for more songs from them. Displays message if there is an error or if the download is successful.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoshi415/djcity_chrome_extension.git"
+  },
+  "author": "Yoshio Varney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yoshi415/djcity_chrome_extension/issues"
+  },
+  "homepage": "https://github.com/yoshi415/djcity_chrome_extension#readme",
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-foreach": "^0.1.0",
+    "gulp-ignore": "^2.0.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-size": "^2.0.0",
+    "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.7",
+    "jshint": "^2.9.1",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

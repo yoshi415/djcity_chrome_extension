@@ -1,3 +1,6 @@
+var config = require('./config');
+console.log(config.keyCodes);
+
 var autorate, rating, downloadToggle, downloadType, songID, displayOverlay, downloadValue;
 var $submit = $('#ctl00_PageContent_submit');
 var $search = $("input[type=text]");
@@ -27,15 +30,6 @@ var songTypes = {
   "Inst":          [ 5, /^Inst$/ ],
   "Acap":          [ 6, /^Acap/ ]
 };
-// var downloadValues = {
-//   "Dirty":         0,
-//   "Clean":         1, 
-//   "Inst":          2,
-//   "Acap":          3,
-//   "Main":          4,
-//   "Intro - Dirty": 5,
-//   "Intro - Clean": 6
-// };
 var disabledURLs = [
   "http://www.djcity.com/",
   "http://www.djcity.com/#",
@@ -353,4 +347,8 @@ $(function() {
   $(window).resize(throttledResize);
 
   $("#dropdownDL").val(downloadValue).trigger("change");
+
+  // require([''], function(config) {
+  //   console.log(config.disabledURLs)
+  // })
 });

@@ -14,7 +14,7 @@
     "default_popup": "popup.html"
   },
   
-  "permissions": [ "tabs", "storage" ],
+  "permissions": [ "tabs", "<all_urls>", "storage" ],
 
   "background": {
     "scripts": [ "js/background.js" ]
@@ -23,11 +23,7 @@
   "content_scripts": [
     {
       "matches": [ "http://*.djcity.com/*", "http://*.djcity.co.uk/*" ],
-      "js": [ "assets/js/jquery-1.11.3.min.js", "js/rate.js", "js/popup.js" ]
+      "js": [ "assets/js/jquery-1.11.3.min.js", "js/content.js", "js/popup.js" ]
     }
-  ],
-
-  "web_accessible_resources": [
-    
-  ]  
+  ]
 }
