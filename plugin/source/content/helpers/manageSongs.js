@@ -10,6 +10,7 @@ function trackDownloaded(type) {
 
 exports.rate = function rate(rating) {
   var $submit = $('#ctl00_PageContent_submit');
+  console.log("rating", rating, $submit)
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
   $submit.click();
   rated = true;
@@ -65,8 +66,9 @@ exports.download = function download(rated) {
 
 exports.hasNotBeenDownloaded = function hasNotBeenDownloaded() {
   var songID = window.location.search;
-  options.downloadedSongs[songID] = options.downloadedSongs[songID] || [];
-  if (options.downloadedSongs[songID].indexOf(options.downloadType) > -1) {
+  var downloadedSongs = options.downloadedSongs[songID];
+  downloadedSongs = downloadedSongs || [];
+  if (downloadedSongs.indexOf(options.downloadType) > -1) {
     var message = Messages.create("The " + options.type + " version of this song has already been downloaded by the extension", "green");
     Messages.insert(message, false);
     return false;

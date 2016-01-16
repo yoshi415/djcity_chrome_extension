@@ -1,3 +1,5 @@
+var options = require('../config').options
+
 function onOff(id, onOff) {
   var color = onOff === "ON" ? "#70AB8F" : "#ff030d";
   return "<a href='#' id='" + id + "'' style='color:" + color + "'>" + onOff + "</a>";
@@ -33,17 +35,16 @@ function createOverlay(options) {
     });
   }
 }
+exports.create = createOverlay;
 
 function toggleOverlayOnResize() {
   var width = $(document).width();
   if (width < 1300) {
     $("#extensionOverlay").remove();
   } else {
-    createOverlay(displayOverlay, autorate, downloadToggle, downloadValue);
+    createOverlay(options);
   }
 }
-
-exports.create = createOverlay;
 
 exports.throttledResize = (function throttledResize() {
   var last, deferTimer, threshhold = 75;

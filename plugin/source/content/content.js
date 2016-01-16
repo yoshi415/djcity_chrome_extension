@@ -8,14 +8,11 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   for (var option in settings) {
     options[option] = settings[option] ? settings[option] : options[option];
   }
-  // options.actionsAllowed = ~Config.disabledURLs.indexOf(url) ? options.actionsAllowed : false;
-  
-  // if (Config.songTypes[downloadType]) {
   options.downloadValue = Config.songTypes[options.downloadType][0];
-  // }
+  options.actionsAllowed = ~Config.disabledURLs.indexOf(window.location.href) ? false : true;
 });
-console.log(options.test)
-chrome.storage.onChanged.addListener(function(changes, local) {
+
+chrome.storage.onChanged.addListener(function(changes) {
   if (changes.autorate) {
     if (changes.autorate.newValue) {
       options.autorate = true;
@@ -55,18 +52,15 @@ $(function() {
   var $search = $("input[type=text]");
   var url = window.location.href;
   var hasNotBeenDownloaded = Song.hasNotBeenDownloaded();
+  var alreadyDownloaded = $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!";
   var focused = false;
   var rated = false;
-
-  if (~Config.disabledURLs.indexOf(url))  {
-    options.actionsAllowed = false;
-  }
   
   if ($(document).width() > 1300) {
     Overlay.create(options);
   }
 
-  if (!hasNotBeenDownloaded || $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!") {
+  if (!hasNotBeenDownloaded || alreadyDownloaded) {
     rated = true;
   }
 
@@ -104,7 +98,6 @@ $(function() {
       }
       if (e.keyCode === 68) {
         if (options.actionsAllowed && hasNotBeenDownloaded) {
-          console.log('d')
           Song.download(rated);
         }
       }

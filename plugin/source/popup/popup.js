@@ -1,9 +1,3 @@
-var $toggleAuto = $("#toggleAuto");
-var $ratings = $("input[name='rating']");
-var $radioRate = $("#radioRating");
-var $toggleDL = $("#toggleDL");
-var $dropdownDL = $("#dropdownDL");
-var $toggleOverlay = $("#toggleOverlay")
 var autorate, downloadToggle, downloadType, displayOverlay;
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "displayOverlay"], function(settings) {
@@ -40,43 +34,53 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   }
 });
 
-$toggleAuto.click(function() {
-  autorate = !autorate;
-  chrome.storage.local.set({"autorate": autorate});
-});
 
-$ratings.click(function() {
-  var rating = $ratings.filter(":checked").val();
-  chrome.storage.local.set({"rating": rating});
-});
+$(function() {
+  var $toggleAuto = $("#toggleAuto");
+  var $ratings = $("input[name='rating']");
+  var $radioRate = $("#radioRating");
+  var $toggleDL = $("#toggleDL");
+  var $dropdownDL = $("#dropdownDL");
+  var $toggleOverlay = $("#toggleOverlay");
+  
+  $toggleAuto.click(function() {
+    autorate = !autorate;
+    chrome.storage.local.set({"autorate": autorate});
+  });
 
-$toggleDL.click(function() {
-  downloadToggle = !downloadToggle;
-  chrome.storage.local.set({"downloadToggle": downloadToggle});
-});
+  $ratings.click(function() {
+    var rating = $ratings.filter(":checked").val();
+    chrome.storage.local.set({"rating": rating});
+  });
 
-$toggleOverlay.click(function() {
-  displayOverlay = !displayOverlay;
-  chrome.storage.local.set({"displayOverlay": displayOverlay});
-});
+  $toggleDL.click(function() {
+    downloadToggle = !downloadToggle;
+    chrome.storage.local.set({"downloadToggle": downloadToggle});
+  });
 
-$dropdownDL.change(function() {
-  downloadType = $("select option:selected").text();
-  chrome.storage.local.set({"downloadType": downloadType});
-});
+  $toggleOverlay.click(function() {
+    displayOverlay = !displayOverlay;
+    chrome.storage.local.set({"displayOverlay": displayOverlay});
+  });
 
-$toggleAuto.change(function() {
-  if (this.checked) {
-    $radioRate.removeClass("disableOptions");
-  } else {
-    $radioRate.addClass("disableOptions");
-  }
-});
+  $dropdownDL.change(function() {
+    downloadType = $("select option:selected").text();
+    chrome.storage.local.set({"downloadType": downloadType});
+  });
 
-$toggleDL.change(function() {
-  if (this.checked) {
-    $dropdownDL.removeClass("disableOptions");
-  } else {
-    $dropdownDL.addClass("disableOptions");
-  }
+  $toggleAuto.change(function() {
+    if (this.checked) {
+      $radioRate.removeClass("disableOptions");
+    } else {
+      $radioRate.addClass("disableOptions");
+    }
+  });
+
+  $toggleDL.change(function() {
+    if (this.checked) {
+      $dropdownDL.removeClass("disableOptions");
+    } else {
+      $dropdownDL.addClass("disableOptions");
+    }
+  });
 });
