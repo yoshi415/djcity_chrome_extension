@@ -1,9 +1,1 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-function checkURL(tabId, info, tab) {
-  if (~tab.url.indexOf("djcity.co")) {
-    chrome.pageAction.show(tabId);
-  }
-}
-
-chrome.tabs.onUpdated.addListener(checkURL);
-},{}]},{},[1]);
+!function r(e,n,t){function o(u,f){if(!n[u]){if(!e[u]){var c="function"==typeof require&&require;if(!f&&c)return c(u,!0);if(i)return i(u,!0);var a=new Error("Cannot find module '"+u+"'");throw a.code="MODULE_NOT_FOUND",a}var d=n[u]={exports:{}};e[u][0].call(d.exports,function(r){var n=e[u][1][r];return o(n?n:r)},d,d.exports,r,e,n,t)}return n[u].exports}for(var i="function"==typeof require&&require,u=0;u<t.length;u++)o(t[u]);return o}({1:[function(r,e,n){function t(r,e,n){~n.url.indexOf("djcity.co")&&chrome.pageAction.show(r)}chrome.tabs.onUpdated.addListener(t)},{}]},{},[1]);
