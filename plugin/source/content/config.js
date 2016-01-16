@@ -33,6 +33,8 @@ module.exports = {
     downloadType: "Dirty",
     downloadedSongs: {},
     displayOverlay: false,
-    downloadValue: 0
+    downloadValue: 0,
+    playing: false,
+    actionsAllowed: true
   }
 };

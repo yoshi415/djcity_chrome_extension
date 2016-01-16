@@ -2,7 +2,9 @@ function createLink(artist) {
   return "<a href='" + artist + "' class='searchArtist'>" + artist + "</a>";
 }
 
-exports.searchArtist = function searchArtist($search, $searchBtn, artist) {
+exports.searchArtist = function searchArtist(artist) {
+  var $search = $("input[type=text]");
+  var $searchBtn = $(".search_btn");
   $search.val(artist);
   $searchBtn.click();
 };
