@@ -10,11 +10,11 @@ module.exports = {
   songTypes: {
     "Dirty":         [ 0, /^Dirty$/ ],
     "Clean":         [ 1, /^Clean$/ ], 
-    "Intro - Dirty": [ 2, /^Intro - Dirty$/ ],
-    "Intro - Clean": [ 3, /^Intro - Clean$/ ],
+    "Inst":          [ 2, /^Inst$/ ],
+    "Acap":          [ 3, /^Acap/ ],
     "Main":          [ 4, /^Main$/ ],
-    "Inst":          [ 5, /^Inst$/ ],
-    "Acap":          [ 6, /^Acap/ ]
+    "Intro - Dirty": [ 5, /^Intro - Dirty$/ ],
+    "Intro - Clean": [ 6, /^Intro - Clean$/ ],
   },
 
   disabledURLs: [
