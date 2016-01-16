@@ -11,6 +11,7 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
   options.downloadValue = Config.songTypes[options.downloadType][0];
   options.actionsAllowed = ~Config.disabledURLs.indexOf(window.location.href) ? false : true;
 });
+var blah;
 
 chrome.storage.onChanged.addListener(function(changes) {
   if (changes.autorate) {
