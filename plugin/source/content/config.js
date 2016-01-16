@@ -23,5 +23,16 @@ module.exports = {
     "http://www.djcity.com/default.aspx",
     "http://www.djcity.com/digital/record-pool.aspx",
     "http://www.djcity.com/charts/"
-  ]
+  ], 
+
+  options: {
+    // default values, will be overwritten on storage.get
+    autorate: false,
+    rating: 5,
+    downloadToggle: false,
+    downloadType: "Dirty",
+    downloadedSongs: {},
+    displayOverlay: false,
+    downloadValue: 0
+  }
 };

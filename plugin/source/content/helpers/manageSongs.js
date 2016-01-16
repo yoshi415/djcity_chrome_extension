@@ -7,12 +7,12 @@ function trackDownloaded(type, downloadedSongs) {
   chrome.storage.local.set({"downloadedSongs": downloadedSongs});
 }
 
-exports.rate = function rate(rating) {
+exports.rate = function rate(rating, $submit) {
   var $submit = $('#ctl00_PageContent_submit');
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
   $submit.click();
   rated = true;
-}
+};
 
 exports.playPause = function playPause(e) {
   if (!playing) {
@@ -22,7 +22,7 @@ exports.playPause = function playPause(e) {
     document.getElementsByClassName("jp-pause")[0].click()
     playing = false;
   }
-}
+};
 
 exports.download = function download(rated, songType, downloadedSongs, downloadToggle, actionsAllowed, $insertMessage) {
   var downloadBtnExists = $(".reviw_tdonw").length > 0;
@@ -59,7 +59,7 @@ exports.download = function download(rated, songType, downloadedSongs, downloadT
       Messages.insert(message, true, actionsAllowed, $insertMessage);
     }
   }
-}
+};
 
 exports.hasNotBeenDownloaded = function hasNotBeenDownloaded(type, downloadedSongs, actionsAllowed, $insertMessage) {
   var songID = window.location.search;
@@ -70,4 +70,4 @@ exports.hasNotBeenDownloaded = function hasNotBeenDownloaded(type, downloadedSon
     return false;
   } 
   return true;
-}
+};

@@ -14,4 +14,4 @@ exports.insert = function insertMessage(text, remove, actionsAllowed, $insertMes
       }, 3000);
     }
   }
-}
+};

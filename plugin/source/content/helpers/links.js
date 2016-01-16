@@ -5,7 +5,7 @@ function createLink(artist) {
 exports.searchArtist = function searchArtist($search, $searchBtn, artist) {
   $search.val(artist);
   $searchBtn.click();
-}
+};
 
 exports.create = function createLinks(artist) {
   var artistNames = artist.text().replace(/\&/g, ",").split(",").filter(function(item) {
@@ -32,4 +32,4 @@ exports.create = function createLinks(artist) {
 
   searchString += "</span>";
   artist.html(searchString);
-}
+};
