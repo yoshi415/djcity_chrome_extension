@@ -1,17 +1,16 @@
-var Config = require('./config');
+var config = require('./config');
 var options = require('./config').options;
-var Links = require('./helpers/links');
-var Overlay = require('./helpers/overlay');
-var Song = require('./helpers/manageSongs');
+var links = require('./helpers/links');
+var overlay = require('./helpers/overlay');
+var song = require('./helpers/managesongs');
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "downloadedSongs", "displayOverlay"], function(settings) {
   for (var option in settings) {
     options[option] = settings[option] ? settings[option] : options[option];
   }
-  options.downloadValue = Config.songTypes[options.downloadType][0];
-  options.actionsAllowed = ~Config.disabledURLs.indexOf(window.location.href) ? false : true;
+  options.downloadValue = config.songTypes[options.downloadType][0];
+  options.actionsAllowed = ~config.disabledURLs.indexOf(window.location.href) ? false : true;
 });
-var blah;
 
 chrome.storage.onChanged.addListener(function(changes) {
   if (changes.autorate) {
@@ -36,14 +35,14 @@ chrome.storage.onChanged.addListener(function(changes) {
 
   if (changes.downloadType) {
     options.downloadType = changes.downloadType.newValue;
-    options.downloadValue = Config.songTypes[options.downloadType][0];
+    options.downloadValue = config.songTypes[options.downloadType][0];
   }
 
   if (changes.displayOverlay) {
     options.displayOverlay = changes.displayOverlay.newValue;
   }
 
-  Overlay.create(options);
+  overlay.create(options);
 });
 
 $(function() {
@@ -52,13 +51,13 @@ $(function() {
   var $featuring = $("#artist_details li:nth-child(3) div.artist_label");
   var $search = $("input[type=text]");
   var url = window.location.href;
-  var hasNotBeenDownloaded = Song.hasNotBeenDownloaded();
+  var hasNotBeenDownloaded = song.hasNotBeenDownloaded();
   var alreadyDownloaded = $("div h4").text() === "Thank you for your feedback on this track!  Enjoy the download!";
   var focused = false;
   var rated = false;
   
   if ($(document).width() > 1300) {
-    Overlay.create(options);
+    overlay.create(options);
   }
 
   if (!hasNotBeenDownloaded || alreadyDownloaded) {
@@ -66,15 +65,15 @@ $(function() {
   }
 
   if (options.autorate) {
-    Song.rate(options.rating);
+    song.rate(options.rating);
     if (options.downloadToggle && options.actionsAllowed && hasNotBeenDownloaded) {
-      Song.download(rated);
+      song.download(rated);
     }
   }
 
-  Links.create($artist);
+  links.create($artist);
   if ($featuring.text() === "Featuring") {
-    Links.create($featured);
+    links.create($featured);
   }
 
   $search.focus(function() {
@@ -86,24 +85,24 @@ $(function() {
 
   $(".searchArtist").click(function(e) {
     e.preventDefault();
-    Links.searchArtist($(this).text());
+    links.searchArtist($(this).text());
   });
   
   $("body").keydown(function(e) {
     if (!focused) {
-      var keyIsNumber = Config.keyCodes[e.keyCode];
+      var keyIsNumber = config.keyCodes[e.keyCode];
       if (keyIsNumber) {
         if (options.actionsAllowed && options.downloadToggle) {
-          Song.rate(keyIsNumber);
+          song.rate(keyIsNumber);
         }
       }
       if (e.keyCode === 68) {
         if (options.actionsAllowed && hasNotBeenDownloaded) {
-          Song.download(rated);
+          song.download(rated);
         }
       }
       if (e.keyCode === 80) {
-        Song.playPause();
+        song.playPause();
       }
 
       if (e.shiftKey === true) {
@@ -119,5 +118,6 @@ $(function() {
     }
   });
 
-  $(window).resize(Overlay.throttledResize);
+  $(window).resize(overlay.throttledResize);
+  $("#dropdownDL").val(options.downloadValue).attr("selected", "selected");  
 });

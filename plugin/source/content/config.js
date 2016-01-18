@@ -22,7 +22,12 @@ module.exports = {
     "http://www.djcity.com/#",
     "http://www.djcity.com/default.aspx",
     "http://www.djcity.com/digital/record-pool.aspx",
-    "http://www.djcity.com/charts/"
+    "http://www.djcity.com/charts/",
+    "http://www.djcity.co.uk/",
+    "http://www.djcity.co.uk/#",
+    "http://www.djcity.co.uk/default.aspx",
+    "http://www.djcity.co.uk/digital/record-pool.aspx",
+    "http://www.djcity.co.uk/charts/"
   ], 
 
   options: {

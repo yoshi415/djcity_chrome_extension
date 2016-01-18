@@ -20,7 +20,7 @@ A record icon will appear in the address bar when you are on http://www.djcity.c
 1. Click download zip (top right) & unpack to a directory you want to store the files in
 2. Open Chrome -> Settings -> Extensions or chrome://extensions
 3. Click 'Developer Mode' in top right & then 'Load unpacked extension...'
-4. Select 'plugin' folder & unclick 'Developer Mode'
+4. Select 'plugin/extension' folder & unclick 'Developer Mode'
  
 ## Images
 

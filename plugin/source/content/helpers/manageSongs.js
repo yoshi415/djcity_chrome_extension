@@ -1,6 +1,6 @@
-var Config = require('../config');
+var songTypes = require('../config').songTypes;
 var options = require('../config').options;
-var Messages = require('./messages');
+var messages = require('./messages');
 
 function trackDownloaded(type) {
   var songID = window.location.search;
@@ -10,7 +10,6 @@ function trackDownloaded(type) {
 
 exports.rate = function rate(rating) {
   var $submit = $('#ctl00_PageContent_submit');
-  console.log("rating", rating, $submit)
   $('option[value="' + rating + '"]').attr('selected', 'selected').parent().focus();
   $submit.click();
   rated = true;
@@ -31,7 +30,7 @@ exports.download = function download(rated) {
   var downloadBtnExists = $(".reviw_tdonw").length > 0;
   if (downloadBtnExists) {
     if (rated) {
-      var re = new RegExp(Config.songTypes[songType][1]);
+      var re = new RegExp(songTypes[songType][1]);
       var $availFormats = $("#ad_sublisting li");
       var typeText = ".float_left";
       var dlButton = ".reviw_tdonw";
@@ -42,24 +41,24 @@ exports.download = function download(rated) {
           found = true;
           $(this).find(dlButton).children()[0].click();
           trackDownloaded(songType);
-          var success = Messages.create("Song was downloaded successfully!", "green");
-          Messages.insert(success, false);
+          var success = messages.create("Song was downloaded successfully!", "green");
+          messages.insert(success, false);
         }
       });
 
       if (!found) {
         var text = songType + " isn't an track option on this song! Try another option";
-        var message = Messages.create(text, "red");
+        var message = messages.create(text, "red");
         if (options.autorate && options.downloadToggle) {
-          Messages.insert(message, false);
+          messages.insert(message, false);
         } else {
-          Messages.insert(message, true);
+          messages.insert(message, true);
         }
 
       }
     } else {
-      var message = Messages.create("You must rate the song before downloading", "red")
-      Messages.insert(message, true);
+      var message = messages.create("You must rate the song before downloading", "red")
+      messages.insert(message, true);
     }
   }
 };
@@ -69,8 +68,8 @@ exports.hasNotBeenDownloaded = function hasNotBeenDownloaded() {
   var downloadedSongs = options.downloadedSongs[songID];
   downloadedSongs = downloadedSongs || [];
   if (downloadedSongs.indexOf(options.downloadType) > -1) {
-    var message = Messages.create("The " + options.type + " version of this song has already been downloaded by the extension", "green");
-    Messages.insert(message, false);
+    var message = messages.create("The " + options.type + " version of this song has already been downloaded by the extension", "green");
+    messages.insert(message, false);
     return false;
   } 
   return true;

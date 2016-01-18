@@ -17,13 +17,13 @@
   "permissions": [ "tabs", "<all_urls>", "storage" ],
 
   "background": {
-    "scripts": [ "js/background.js" ]
+    "scripts": [ "js/background.min.js" ]
   },
 
   "content_scripts": [
     {
       "matches": [ "http://*.djcity.com/*", "http://*.djcity.co.uk/*" ],
-      "js": [ "assets/js/jquery-1.11.3.min.js", "js/content.js", "js/popup.js" ]
+      "js": [ "assets/js/jquery-1.11.3.min.js", "js/content.min.js", "js/popup.min.js" ]
     }
   ]
 }

@@ -1,3 +1,10 @@
+var $toggleAuto = $("#toggleAuto");
+var $ratings = $("input[name='rating']");
+var $radioRate = $("#radioRating");
+var $toggleDL = $("#toggleDL");
+var $dropdownDL = $("#dropdownDL");
+var $toggleOverlay = $("#toggleOverlay");
+var options = require('../content/config').options;
 var autorate, downloadToggle, downloadType, displayOverlay;
 
 chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType", "displayOverlay"], function(settings) {
@@ -36,13 +43,6 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
 
 $(function() {
-  var $toggleAuto = $("#toggleAuto");
-  var $ratings = $("input[name='rating']");
-  var $radioRate = $("#radioRating");
-  var $toggleDL = $("#toggleDL");
-  var $dropdownDL = $("#dropdownDL");
-  var $toggleOverlay = $("#toggleOverlay");
-  
   $toggleAuto.click(function() {
     autorate = !autorate;
     chrome.storage.local.set({"autorate": autorate});
