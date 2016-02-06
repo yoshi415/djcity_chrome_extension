@@ -1,5 +1,5 @@
 var config = require('./config');
-var options = require('./config').options;
+var options = config.options;
 var links = require('./helpers/links');
 var overlay = require('./helpers/overlay');
 var song = require('./helpers/managesongs');
@@ -14,11 +14,7 @@ chrome.storage.local.get(["autorate", "rating", "downloadToggle", "downloadType"
 
 chrome.storage.onChanged.addListener(function(changes) {
   if (changes.autorate) {
-    if (changes.autorate.newValue) {
-      options.autorate = true;
-    } else {
-      options.autorate = false;
-    }
+    options.autorate = changes.autorate.newValue ? true : false;
   }
 
   if (changes.rating) {
@@ -26,11 +22,7 @@ chrome.storage.onChanged.addListener(function(changes) {
   }
 
   if (changes.downloadToggle) {
-    if (changes.downloadToggle.newValue) {
-      options.downloadToggle = true;
-    } else {
-      options.downloadToggle = false;
-    }
+    options.downloadToggle = changes.downloadToggle.newValue ? true : false;
   }
 
   if (changes.downloadType) {

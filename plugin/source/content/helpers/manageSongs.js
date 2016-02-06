@@ -65,10 +65,9 @@ exports.download = function download(rated) {
 
 exports.hasNotBeenDownloaded = function hasNotBeenDownloaded() {
   var songID = window.location.search;
-  var downloadedSongs = options.downloadedSongs[songID];
-  downloadedSongs = downloadedSongs || [];
-  if (downloadedSongs.indexOf(options.downloadType) > -1) {
-    var message = messages.create("The " + options.type + " version of this song has already been downloaded by the extension", "green");
+  options.downloadedSongs[songID] = options.downloadedSongs[songID] || [];
+  if (options.downloadedSongs[songID].indexOf(options.downloadType) > -1) {
+    var message = messages.create("The " + options.downloadType + " version of this song has already been downloaded by the extension", "green");
     messages.insert(message, false);
     return false;
   } 
