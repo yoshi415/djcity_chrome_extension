@@ -1,4 +1,4 @@
-# DJCity Chrome extension - (Chrome Store Link)[https://chrome.google.com/webstore/detail/djcity-easy-rate/dfikbmpfonoigjpdnpiogkmhkapdpfbc?hl=en]
+# DJCity Chrome extension - [Chrome Store Link](https://chrome.google.com/webstore/detail/djcity-easy-rate/dfikbmpfonoigjpdnpiogkmhkapdpfbc?hl=en)
 
 A Chrome extension for DJCity.com allowing easy rating & downloading. Replaces artist's names with a link to search for more songs from them. Displays message if there is an error or if the download is successful.
 
