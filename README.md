@@ -14,13 +14,6 @@ A record icon will appear in the address bar when you are on http://www.djcity.c
   Will only download each type of song once with this option.
 - Use overlay (top left) of screen to toggle options as well.
 - When overlay is visible, press `shift + arrow-up` or `shift + arrow-down` to change between song types.
-
-## Installation
-
-1. Click download zip (top right) & unpack to a directory you want to store the files in
-2. Open Chrome -> Settings -> Extensions or chrome://extensions
-3. Click 'Developer Mode' in top right & then 'Load unpacked extension...'
-4. Select 'plugin/extension' folder & unclick 'Developer Mode'
  
 ## Images
 
